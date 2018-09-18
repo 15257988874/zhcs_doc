@@ -1,20 +1,21 @@
+"use strict";
+var ycya=ycya || {};
 var app = ycya.page || {};
 app.ui = {
-    version:'0.1.5',
+    version:'0.8.6',
     anim:4,
     formSelectsCfg:{
-        type:"get",
+        type:'get',
         data: {},                   //自定义除搜索内容外的其他数据
         searchUrl: '',    //搜索地址, 默认使用xm-select-search的值, 此参数优先级高
-        searchName: 'keyword',      //自定义搜索内容的key值
+        searchName: '',      //自定义搜索内容的key值
         keyName: 'name',            //自定义返回数据中name的key, 默认 name
         keyVal: 'value',            //自定义返回数据中value的key, 默认 value
         keySel: 'selected',         //自定义返回数据中selected的key, 默认 selected
         keyDis: 'disabled',         //自定义返回数据中disabled的key, 默认 disabled
         delay: 500,                 //搜索延迟时间, 默认停止输入500ms后开始搜索
         direction: 'down',          //多选下拉方向, auto|up|down
-        success: function(id, url, searchVal, result){ //组件ID xm-select  URL 搜索的value 返回的结果     
-        },
+        success: function(id, url, searchVal, result){}, //组件ID xm-select  URL 搜索的value 返回的结果     
         error: function(id, url, searchVal, err){//使用远程方式的error回调
             layer.msg(err);   //err对象
         },
@@ -25,12 +26,11 @@ app.ui = {
             // }
             return true;
         },
-        clearInput: true          //当有搜索内容时, 点击选项是否清空搜索内容, 默认不清空
+        clearInput: true//当有搜索内容时, 点击选项是否清空搜索内容, 默认不清空
     }
 };
 app.ui.page={};
 //表单元素
-var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', 'reset', 'init']);
 (function (win) {           
     var YInput = function (pdom,cfg) {
         this.pdom = pdom;
@@ -52,7 +52,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
             for(var i=0;i<this.id.length;i++){
                 if(i>0)html += '至';
                 html += '<input type="text" id="'+this.id[i]
-                    +'" autocomplete="off" class="layui-input" '+lenCss+'>';
+                    +'" autocomplete="off" class="layui-input" '+lenCss+' name='+this.cfg.name+'>';
             }
             html += '</div></div>';
             $('.yy-m-search',this.pdom).prepend(html);
@@ -65,7 +65,6 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                 }
             }else{
                 var _this=this;
-                // $.extend
                 if(this.cfg.click){
                     if(_this.cfg.treeCfg){
                         $('#'+this.id[0]).click(function(){
@@ -73,7 +72,9 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                         });
                     }else{
                         $('#'+this.id[0]).click(function(){
-                            _this.cfg.click();
+                            var res={};
+                            $(this).attr('keyid') && (res.keyid=$(this).attr('keyid'));
+                            _this.cfg.click($.extend(_this.cfg.cfg,{elm:$(this)}),res);
                         });
                     }
                 }
@@ -121,7 +122,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
             // if (cfg.qt == 'btw') { //范围查询
             //     this.id = ['qry_' + this.cfg.name + '_gt', 'qry_' + this.cfg.name + '_lt'];
             // } else {
-                this.id = ['qry_' + this.cfg.name + '_' + cfg.qt];
+            this.id = ['qry_' + this.cfg.name + '_' + cfg.qt];
             // }
         }
         if(cfg.handle){
@@ -135,40 +136,64 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
         }else{
             this.cfgFn={};
         }
-        if(!vType){
-            this._init('msg');
-        }else{
-            this._init(vType);
-        }
+        this._init(!vType ?'msg':vType);
     }
     AQInput.prototype = {
         _init: function (vType) {
             var lenCss = this.cfg.len?"style='width:"+this.cfg.len+"px'":"",
                 html = '',
-                iClass=this.id.length>1?"input-btw" :'';
-            var dt= this.cfg.dt?this.cfg.dt:'text';
+                iClass=this.id.length>1?"input-btw" :'',
+                _this=this;
+            var dt= this.cfg.dt?this.cfg.dt:'text',
+                shortc=this.cfg.cfg;
             if(dt=='text' || dt=='date'){
-                // for (var i = 0; i < this.id.length; i++) {
-                //     if (i > 0) html += '至';
-                    var iType=this.cfg.inputType || 'text',
-                        iVerity=this.cfg.verify || '',
-                        placeholder=this.cfg.placeholder? 'placeholder="'+this.cfg.placeholder+'"':'';
-                    if(this.cfg.isReadonly){
-                        html += '<input type='+iType+'  name='+this.id[0]+' autocomplete="off"  '+lenCss+'  readonly lay-verify=' + iVerity + ' class='+iClass+' lay-verType='+vType+' '+placeholder+'>';
-                    }else{
-                        html += '<input type='+iType+'  name='+this.id[0]+' autocomplete="off"  '+lenCss+'   lay-verify=' + iVerity + ' class="'+iClass+'" lay-verType='+vType+'  '+placeholder+' >';
-                    }    
-                // }
+                var iType=this.cfg.inputType || 'text',
+                    iVerity=this.cfg.verify ? 'lay-verify="'+this.cfg.verify+'"':'',
+                    placeholder=this.cfg.placeholder? 'placeholder="'+this.cfg.placeholder+'"':'',
+                    readonly=this.cfg.isReadonly?'readonly':'';
+                html += '<input type="'+iType+'"  name="'+this.id[0]+'" autocomplete="off"  '+lenCss+'  '+readonly+' '+iVerity+ ' class="'+iClass+'" lay-verType="'+vType+'" '+placeholder+'>';
             }else if(dt=='switch'){
-                var chk = this.cfg.cfg.checked && cfg.cfg.checked==1?'checked=""':'',
-                arr = this.cfg.cfg.values.split('|'),
-                value = this.cfg.cfg.checked && cfg.cfg.checked==1?arr[0]:arr[1];
+                if(shortc.values.length!=3 || shortc.text.length!=3){
+                    return new TypeError();
+                }
+                var arr = shortc.values.split('|'), 
+                    chk = shortc.checked !==undefined &&  shortc.checked==arr[0]?'checked=""':'',
+                    value = shortc.checked !==undefined &&  shortc.checked==arr[0]?arr[0]:arr[1];
                 html+= '<input type="checkbox" '+chk+'  value="'+value+'" name="'+this.cfg.name
-                +'"  lay-skin="switch" lay-text="'+this.cfg.cfg.text+'" data-value="'+this.cfg.cfg.values+'">';
-
+                +'"  lay-skin="switch" lay-text="'+shortc.text+'" data-value="'+shortc.values+'">';
                 this.switch=this.cfg.name;
             }else if(dt=='checkbox'){
-                
+                var skin=shortc.skin?'lay-skin="primary"':'';
+                if(shortc.data && ! shortc.url){//本地加载
+                    var _checked=shortc.checked ? (shortc.checked.indexOf('|')==-1)?[shortc.checked]:shortc.checked.split('|'):[];
+                    $.each(shortc.data,function(i,item){
+                        var isCheck= $.inArray(i,_checked)!=-1?'checked=""':'';
+                        html+='<input type="checkbox" name="'+_this.cfg.name+'" title="'+item+'" '+skin+' '+isCheck+' value="'+i+'">';
+                    });
+                    _checked.length>0 && (this.checkInitVal={
+                        name:_this.cfg.name,
+                        checked:_checked
+                    });
+                }
+                if(shortc.url){//服务器加载
+                    _this.checkInitVal={
+                        name:_this.cfg.name
+                    };
+                }
+            }else{//radio
+                var arr=shortc.values.split('|'),
+                    text=shortc.text.split('|');
+                if(arr.length!=text.length){
+                    return new TypeError();
+                }
+                $.each(arr,function(i,item){
+                    var chk=item==_this.cfg.cfg.checked ?'checked=""':'';
+                    html+= '<input type="radio" name="'+_this.cfg.name+'"  value="'+item+'" title="'+text[i]+'" '+chk+'>'
+                });    
+                this.radioInitVal={
+                    name:_this.cfg.name,
+                    checked:_this.cfg.cfg.checked
+                };
             }
             this.html=html;
             if (this.cfg.dt == 'date') {
@@ -222,21 +247,21 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
         },
         createSel:function(obj,requireAll){
             var _option=requireAll!==undefined?['<option value='+requireAll+'>全部</option>']:[],_this=this;
-                $.each(obj,function(i,item){
-                    _option.push( $('<option value='+item[_this.cfg["keyName"]]+'>'+item[_this.cfg["valName"]]+'</option>')[0].outerHTML);
-                });
-                var _divItem=$("<div/>",{class:'yy-m-search-item'}),
-                    _lab=$('<label/>',{text:this.cfg.label}),
-                    _div=$('<div/>'),
-                    _sel=$('<select/>',{
-                    id:this.id[0],    
+            $.each(obj,function(i,item){
+                _option.push( $('<option value='+item[_this.cfg["keyName"]]+'>'+item[_this.cfg["valName"]]+'</option>')[0].outerHTML);
+            });
+            var _divItem=$("<div/>",{class:'yy-m-search-item'}),
+                _lab=$('<label/>',{text:this.cfg.label}),
+                _div=$('<div/>'),
+                _sel=$('<select/>',{
+                    id:this.id[0],   
+                    // name:this.cfg.name, 
                     html:_option.join(''),
-                    width:this.cfg.len?this.cfg.len:auto
+                    width:this.cfg.len?this.cfg.len:'auto'
                 });
-                _div.append(_sel);
-                _divItem.append(_lab).append(_div);
-               
-                $('.yy-m-search',this.pdom).prepend(_divItem);
+            _div.append(_sel);
+            _divItem.append(_lab).append(_div);   
+            $('.yy-m-search',this.pdom).prepend(_divItem);
         }
     };
     win.Yselect = Yselect;
@@ -285,7 +310,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
     };
     win.Yupload=Yupload;
 })(window);
-(function(ycya){
+(function(yy){
     var Autoform = function (cfg) {
         this.dateList=[];   //date数组
         this.dateCfgList=[];//date 格式数组
@@ -297,7 +322,10 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
         this.id=[]; //存储例如部门ID元素 name
         this.address=[]; //存储地点信息
         this.switchList=[]; //存放switch列表
-        this.selectList=[];
+        this.selectList=[]; //存放select列表
+        this.radioList=[]; //存放radio列表
+        this.checkList=[]; //存放radio列表
+        this.selectMap={};
         this._cfg = {
             isAdvanced:false,  //高级查询
             id: '',            //容器ID 
@@ -308,15 +336,13 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
             submitFn:function(){},    //提交函数 
             verType:'tips', //用于定义异常提示层模式。 tips（吸附层,默认）alert（对话框） msg           
             item: [] //表单元素列表
-    /* 渲染选项{label:'姓名',elmType:'input',name:"userName",'isBlock':true}
+            /* 渲染选项{label:'姓名',elmType:'input',name:"userName",'isBlock':true}
             elmType:            input、textarea、select
             inputType:''        input元素的预留 password
             isReadonly:booloean 
             dt:text、date、checkbox、radio、switch
             qt:eq(等于)、ne(不等于)、gt(大于)、lt(小于),like(包含),in(多值),btw(范围)  
-            isRequired          是否必填 ,用于产生 * 号
-            selectOption:{}     本地加载select使用字段
-            openSearch:'' ,     是否开始select搜索
+            cfg:'' ,            配置
             verify:''           layui--验证 
             handle:function     表单元素事件函数 默认click
             eventName:''        表单元素事件    默认click
@@ -404,42 +430,68 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                     itemBlcok=con.isBlock?'block-item layui-form-item':'layui-form-item',
                     _li=$('<li class="'+itemBlcok+'"><label>' + req + con.label + ': </label></li>'),
                     divStyle = 'm-inline-block w-all',
-                    inputType = con.inputType ? con.inputType : 'text';
+                    inputType = con.inputType ? con.inputType : 'text',
                     elmType=con.elmType || 'input',
                     verType=cfg.verType?cfg.verType:'tips';
                 switch (elmType) {
-                    case 'input':
-                        if(inputType=='text'){
-                            var formItem = new AQInput(con,cfg.verType); 
-                            if(formItem.date.length>0){
-                                this.dateList.push(formItem.date);
-                                this.dateCfgList.push(formItem.dateCfg);
-                            }
-                            if(formItem.handle  || con.eventName){
-                                this.bindElm.push(formItem.id[0]);
-                                this.eventName.push(formItem.eventName);
-                                this.eventFn.push(formItem.handle || function(){});
-                                this.cfgFn.push(formItem.cfgFn);
-                            }
-                             formItem.switch && this.switchList.push(formItem.switch);
-                            _li.append($('<div class="' + divStyle + '">'+formItem.html+'</div>'));
-                        }else if(inputType=='password'){
-                            //判断是否加载md5.js
-                            var md5flag=false;
-                            $('script').each(function(){
-                                if( $(this)[0].outerHTML.indexOf('md5.js')!==-1 ){
-                                    md5flag=true;
-                                    return false; 
-                                }
-                            });
-                            if(!md5flag){
-                                var _jsLoader=new YcyaLoader();
-                                _jsLoader.loadFileList([getContentPath()+'/res/dep/md5/md5.js'],function(){
-                                });
-                            }
-                            _li.append($('<div class="' + divStyle + '"><input type="password" name="'+con.name+'" lay-vertype="'+verType+' " lay-verify="' + verify + '" id="'+con.name+'_"></div>'));
-                            this.pwd.push(con.name);
+                case 'input':
+                    if(inputType=='text'){
+                        var formItem = new AQInput(con,cfg.verType); 
+                        if(formItem.date.length>0){
+                            this.dateList.push(formItem.date);
+                            this.dateCfgList.push(formItem.dateCfg);
                         }
+                        if(formItem.handle  || con.eventName){
+                            this.bindElm.push(formItem.id[0]);
+                            this.eventName.push(formItem.eventName);
+                            this.eventFn.push(formItem.handle || function(){});
+                            this.cfgFn.push(formItem.cfgFn);
+                        }
+                        formItem.switch && this.switchList.push(formItem.switch);
+                        formItem.radioInitVal && this.radioList.push(formItem.radioInitVal);
+                        formItem.checkInitVal && this.checkList.push(formItem.checkInitVal);
+                        if(formItem.html){
+                            _li.append($('<div class="' + divStyle + '">'+formItem.html+'</div>'));
+                        }else{
+                            (function(con,_li){
+                                var rersult='',
+                                    skin=con.cfg.skin?'lay-skin="primary"':'',
+                                    aliasCon=con.cfg.cfg;
+                                ycya.http.ajax(con.cfg.url,{
+                                    data:aliasCon.data,
+                                    type:aliasCon.type || 'post',
+                                    success:function(data){
+                                        var _name=aliasCon.keyName || 'name',
+                                            _val=aliasCon.keyVal || 'id';
+                                        var d=aliasCon.beforeSuccess?aliasCon.beforeSuccess(data):(data.data || []);
+                                        $.each(d,function(i,item){
+                                            rersult+='<input type="checkbox" name="'+con.name+'" title="'+item[_name]+'" '+skin+'  value="'+item[_val]+'">';
+                                        });
+                                        _li.append($('<div class="' + divStyle + '">'+rersult+'</div>'));
+                                    },
+                                    error:function(){
+                                        layer.msg('checkbox server load fail');
+                                    }
+                                });
+                            })(con,_li);
+                        }
+                    }else if(inputType=='password'){
+                        //判断是否加载md5.js
+                        var md5flag=false;
+                        $('script').each(function(){
+                            if( $(this)[0].outerHTML.indexOf('md5.js')!==-1 ){
+                                md5flag=true;
+                                return false; 
+                            }
+                        });
+                        if(!md5flag){
+                            var _jsLoader=new YcyaLoader();
+                            _jsLoader.loadFileList([getContentPath()+'/res/dep/md5/md5.js'],function(){
+                            });
+                        }
+                        _li.append($('<div class="' + divStyle + '"><input type="password" name="'+con.name+'" lay-vertype="'+verType+' " lay-verify="' + verify + '" id="'+con.name+'_"></div>'));
+                        this.pwd.push(con.name);
+                    }
                     break;
                     case 'select':
                     var optionStr = '',
@@ -463,7 +515,8 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                         this.selectList.push({
                             id:elmId,
                             cfg:con.cfg
-                        })
+                        });
+                        this.selectMap[elmId]=con.cfg.url?con.cfg:con.cfg.data;
                     break;
                     case 'textarea':
                         var aliasVer=!con.qt?'lay-verType="'+verType+'"':'',
@@ -513,37 +566,35 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                     mapBtn1=$('<button/>',{class:'layui-btn layui-btn-sm layui-btn-normal',text:'绘制',click:function(){
                         var sv=$('[name='+cfg.map.btnToElm+']','#'+cfg.id).val(),
                             t=cfg.map.btnElmJson[sv];
-                            if(!_this.points){
-                                if(t){
-                                   _this.drawRail(t);
-                                }
-                            }else{
-                                layer.msg('已绘制，请选择重汇');
+                        if(!_this.points){
+                            if(t){
+                                _this.drawRail(t);
                             }
+                        }else{
+                            layer.msg('已绘制，请选择重汇');
+                        }
                     }}),
                     mapBtn2=$('<button/>',{class:'layui-btn layui-btn-sm layui-btn-warm',text:'重汇',click:function(){
                         var sv=$('[name='+cfg.map.btnToElm+']','#'+cfg.id).val(),
-                        t=cfg.map.btnElmJson[sv] || 'circle';
+                            t=cfg.map.btnElmJson[sv] || 'circle';
                         if(_this.points){
-                            _this.points="";
+                            _this.points='';
                             _this.map && _this.map.clear();
-                           if(t){
+                            if(t){
                                 _this.drawRail(t);
-                           }
+                            }
                         }else{
                             layer.msg('未绘制，请先绘制');
                         }
                     }});
-                    mapBtn1.css('padding','0 15px');
-                    mapBtn2.css('padding','0 15px');
-                    mapDiv.append(mapBtn1).append(mapBtn2);
-                    mapLi.append(mapDiv);
+                mapBtn1.css('padding','0 15px');
+                mapBtn2.css('padding','0 15px');
+                mapDiv.append(mapBtn1).append(mapBtn2);
+                mapLi.append(mapDiv);
                 _ul.append(mapLi);
             }
-            
             $('#'+cfg.id).append(_ul).append(_btnul);
             if(_map){$('#'+cfg.id).append(_map)};
-            
             if(!cfg.isAdvanced && cfg.pcfg){ this.preview= $('.yy-m-form-picview','#'+cfg.id)};
             //图片按钮事件
             if(!cfg.isAdvanced && cfg.pcfg){
@@ -593,7 +644,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                                 return false;
                             }else{
 
-                                 //预读本地文件示例，不支持ie8
+                                //预读本地文件示例，不支持ie8
                                 obj.preview(function(index, file, result){
                                     $('.yy-m-form-picview','#'+cfg.id).append('<span><img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img"><i class="layui-icon">&#x1006;</i></span>');
                                     //删除图片
@@ -620,7 +671,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                     done:function(res){
                         //如果上传失败
                         if(res.code > 0){
-                          return layer.msg('上传失败,请重新上传');
+                            return layer.msg('上传失败,请重新上传');
                         }
                         //上传成功
                         _this.pic[res["data"][0].oldName]=res["data"][0].uuid;
@@ -632,56 +683,12 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                 $.extend(true,cfg.pcfg,extendPara);
                 this.upload=new Yupload(cfg.pcfg); 
             }
-            //绑定元素事件
-            if(this.eventName.length>0 && (this.eventName.length===this.eventFn.length) ){
-                for(var k=0;k<this.bindElm.length;k++){
-                    (function(k){
-                        if(_this.eventName[k]==="tree"){
-                            _this.id.push(_this.bindElm[k]);
-                            $('#'+cfg.id).on('click','[name="'+_this.bindElm[k]+'"]',function(){
-                                _this.tree($.extend(_this.cfgFn[k],{elm:$(this)}));
-                            }); 
-                        }else if(_this.eventName[k]==="address"){
-                            _this.address.push(_this.bindElm[k]);
-                            $('#'+cfg.id).on('click','[name="'+_this.bindElm[k]+'"]',function(){
-                                _this.getPlace($.extend(_this.cfgFn[k],{elm:$(this)}));
-                            }); 
-                        }else{
-                            $('#'+cfg.id).on(_this.eventName[k],'[name="'+_this.bindElm[k]+'"]',function(){
-                                _this.eventFn[k] && _this.eventFn[k]();
-                            });
-                        }
-                    })(k); //保存k
-                }
-            }
-            //绑定date事件
-            if(this.dateList.length>0){
-                var laydate = layui.laydate;
-                for (var i = 0; i < this.dateList.length; i++) {
-                    if($.type(this.dateList[i])=='array'){
-                        for(var j=0;j<this.dateList[i].length;j++){
-                            var dateCfg={
-                                elem:'#'+_this._cfg.id+' [name="'+this.dateList[i][j]+'"]'
-                            };
-                            $.extend(dateCfg,this.dateCfgList[i][j]);
-                            laydate.render(dateCfg);
-                        }
-                    }else{
-                        var dateCfg = {
-                            elem: '#'+_this._cfg.id+' [name="'+this.dateList[i]+'"]'
-                        }; //指定元素
-                        $.extend(dateCfg,this.dateCfgList[i]);
-                        laydate.render(dateCfg);
-                    }
-                }
-            }
-            var form=layui.form;
-            form.render();
+            layui.form.render();
             if(this.selectList.length>0){ //初始化select
                 var formSelects = layui.formSelects;
                 $.each(this.selectList,function(i,item){
                     if(item.cfg && item.cfg.url){
-                        var cloneCfg=$.extend(true,{},app.ui.formSelectsCfg,{type:item.cfg.type || 'get',searchUrl:item.cfg.url});
+                        var cloneCfg=$.extend(true,{},app.ui.formSelectsCfg,{type:item.cfg.type || 'post',searchUrl:item.cfg.url});
                         var formCfg=$.extend(true,cloneCfg,item.cfg.cfg);
                         formSelects.data(item.id,'server',formCfg);
                     }else{
@@ -706,23 +713,36 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                     }
                 },false);
             }
-            //监听提交按钮
-            if(cfg.filter){
-                form.on('submit(' + cfg.filter + ')', function (data) {
+            this.bindEvent(); //绑定事件
+            this.btnEvent(); //按钮事件监听
+            //执行回调函数
+            if (cfg.callback && $.type(cfg.callback) == 'function') {
+                cfg.callback(this);
+            }
+        },
+        addPicBtn:function(elm){
+
+        },
+        btnEvent:function(){//按钮事件监听
+            var _this=this,
+                cfg=this._cfg;
+            if(cfg.filter){//监听提交按钮
+                layui.form.on('submit(' + cfg.filter + ')', function (data) {
                     if(cfg.pcfg){//删除 file
                         var fileName=!(_this.upload.cfg.file) ?'file':_this.upload.cfg.file;
                         delete data.field[fileName];
                     }
-                    if(cfg.pcfg && cfg.pcfg.required){//验证图片
-                       if( Object.keys(_this.pic).length==0/* !==cfg.pcfg.max */){
-                           return layer.msg('请上传图片');
-                       }else{
-                           var piclist=[];
-                           for(var k in _this.pic){
-                            piclist.push(_this.pic[k])
-                           }
+                    if(cfg.pcfg ){//验证图片
+                        if(cfg.pcfg.required){
+                            if( Object.keys(_this.pic).length==0/* !==cfg.pcfg.max */){
+                                return layer.msg('请上传图片');
+                            }
+                        }
+                        var piclist=[];
+                        for(var k in _this.pic){
+                        piclist.push(_this.pic[k])
+                        }
                         data.field[cfg.pcfg.picName || 'pic']=piclist.join(',');
-                       }
                     }
                     if(cfg.map && cfg.map.admin){//验证经纬度
                         if(!_this.points){
@@ -740,6 +760,20 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                             var _input=parent.find('[name='+name+']'),
                                 _text=_input.siblings('div').find('em').text();
                             data.field[name]=_input.attr('data-value')   [_input.attr('lay-text').indexOf(_text)];
+                        });
+                    }
+                    if( _this.checkList.length>0){
+                        $.each(_this.checkList,function(i,item){
+                            var name=item.name,
+                                divs=$('[name='+name+'] + .layui-form-checkbox','#'+_this._cfg.id),
+                                checkboxs=$('[name='+name+']','#'+_this._cfg.id),
+                                val=[];
+                                for(var k=0,l=divs.length;k<l;k++){
+                                    if( $(divs[k]).hasClass('layui-form-checked') ){
+                                        val.push($( checkboxs[k]).attr('value')); 
+                                    }
+                                }
+                            data.field[name]=val.toString();
                         });
                     }
                     if($.type(cfg.submitFn) == 'function'){
@@ -794,12 +828,56 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                       $('#'+cfg.id).hide(400);
                  }
             });
-            //执行回调函数
-            if (cfg.callback && $.type(cfg.callback) == 'function') {
-                cfg.callback(this);
+        },
+        bindEvent:function(){
+            var _this=this, 
+                cfg=this._cfg;
+            //绑定元素事件
+            if(this.eventName.length>0 && (this.eventName.length===this.eventFn.length) ){
+                for(var k=0;k<this.bindElm.length;k++){
+                    (function(k){
+                        if(_this.eventName[k]==="tree"){
+                            _this.id.push(_this.bindElm[k]);
+                            $('#'+cfg.id).on('click','[name="'+_this.bindElm[k]+'"]',function(){
+                                _this.tree($.extend(_this.cfgFn[k],{elm:$(this)}));
+                            }); 
+                        }else if(_this.eventName[k]==="address"){
+                            _this.address.push(_this.bindElm[k]);
+                            $('#'+cfg.id).on('click','[name="'+_this.bindElm[k]+'"]',function(){
+                                _this.getPlace($.extend(_this.cfgFn[k],{elm:$(this)}));
+                            }); 
+                        }else{
+                            $('#'+cfg.id).on(_this.eventName[k],'[name="'+_this.bindElm[k]+'"]',function(){
+                                _this.eventFn[k] && _this.eventFn[k]();
+                            });
+                        }
+                    })(k); //保存k
+                }
+            }
+            //绑定date事件
+            if(this.dateList.length>0){
+                var laydate = layui.laydate;
+                for (var i = 0; i < this.dateList.length; i++) {
+                    if($.type(this.dateList[i])=='array'){
+                        for(var j=0;j<this.dateList[i].length;j++){
+                            var dateCfg={
+                                elem:'#'+_this._cfg.id+' [name="'+this.dateList[i][j]+'"]'
+                            };
+                            $.extend(dateCfg,this.dateCfgList[i][j]);
+                            laydate.render(dateCfg);
+                        }
+                    }else{
+                        var dateCfg = {
+                            elem: '#'+_this._cfg.id+' [name="'+this.dateList[i]+'"]'
+                        }; //指定元素
+                        $.extend(dateCfg,this.dateCfgList[i]);
+                        laydate.render(dateCfg);
+                    }
+                }
             }
         },
         reset:function(){
+            var _this=this;
             //input reset
             $('input','#'+this._cfg.id).each(function(){
                 var type=$(this).attr('type');
@@ -815,9 +893,35 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                         arr=item.cfg.values.indexOf(',')!==-1?item.cfg.values.split(','):[item.cfg.values-0]
                     }
                     layui.formSelects.value(item.id,arr);
+                    $('input','[fs_id='+item.id+']').removeClass('layui-form-danger');
                })
             }
             //switch  暂不初始化
+            //radio
+            if(this.radioList.length>0){
+                $.each(this.radioList,function(i,item){
+                    var _radios=$('[name='+item.name+']','#'+_this._cfg.id);
+                    for(var k=0,l=_radios.length;k<l;k++){
+                        var elm=$(_radios[k]);
+                        elm.prop('checked',elm.attr('value')==item.checked?true:false);
+                    }
+                });
+                layui.form.render('radio');
+            }
+            if(this.checkList.length>0){
+                $.each(this.checkList,function(i,item){
+                    var checkboxs=$('[name='+item.name+']','#'+_this._cfg.id);
+                    if( !item.checked){
+                        for(var k=0,l=checkboxs.length;k<l;k++){
+                            $( checkboxs[k] ).prop('checked',false);
+                        }
+                    }
+                    for(var k=0,l=checkboxs.length;k<l;k++){
+                        $( checkboxs[k] ).prop('checked',  $.inArray($( checkboxs[k] ).attr('value'),item.checked)!=-1?true:false);
+                    }
+                });
+                layui.form.render('checkbox');
+            }
             //textarea
             $('textarea','#'+this._cfg.id).each(function(){
                 $(this).val('');
@@ -877,9 +981,55 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                 if(type=='text' || type=='password'){
                     $(this).val(valueJson[sign]?valueJson[sign]:'');
                 }else{
-                    $(this).prop('checked',false);
+                    // $(this).prop('checked',false);
                 }
             });
+            if($.type(extra)==='object'){ //
+                $.each(extra,function(i,item){
+                    if(i=='selLinkage'){//联动select数据回显
+                        for(var j=0;j<item.length;j++){
+                            var _j=item[j].name,
+                                elmId=_this._cfg.id+'_'+_j,
+                                testCfg=_this.selectMap[elmId]  || {};
+                            var cloneCfg=$.extend(true,{},app.ui.formSelectsCfg,{type:'post',searchUrl:!$.isEmptyObject(testCfg) && testCfg.url});
+                            formCfg=$.extend(true,cloneCfg,!$.isEmptyObject(testCfg) && testCfg.cfg);
+                            $.each(item[j].data,function(k,val){
+                                formCfg.data[k]=val;
+                            });
+                            layui.formSelects.data(elmId,'server',formCfg);
+                        }
+                    }
+                    if( $('#'+_this.mapId).length>0 && _this._cfg.map.admin){
+                        if(i=='admin' && item){
+                            $('button','#'+_this.popupPara.btnToAdmin).each(function(){
+                                $(this).hide();
+                            });
+                        }else{
+                            _this.map=app.ui.map.init({id:_this.mapId});
+                            _this.map.ready(function () {
+                               if(i=='points' || i=='cirRadius' || i=='cirCenter'){
+                                    _this[i]=valueJson[item];
+                                    if(i=='points' && _this[i]){
+                                        if(_this[i][_this[i].length-1]==','){
+                                            var newStr=_this[i].slice(0,_this[i].length-2);
+                                        }
+                                        var pointList=newStr?newStr.split(','):_this[i].split(','),
+                                            newList=[];
+                                        for(var j=0;j<pointList.length;j+=2){
+                                            newList.push(_this.map.createPoint(pointList[j],pointList[j+1])); 
+                                        }
+                                       setTimeout(function(){
+                                            _this.map.createOverlay(newList,'line2');
+                                       },500)
+                                    }
+                                }
+                            });
+                        }
+                       
+                    }
+                });
+
+            }
             //select 
             if(this.selectList.length>0){
                 // layui.formSelects.render();
@@ -887,7 +1037,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                     var selName=item.id.split('_')[1],
                         selVal=valueJson[selName],
                         selArr=[];
-                    if(selVal){
+                    if(selVal!==undefined){
                         selVal=$.type(selVal)==='string'?selVal:selVal+'';
                         if(selVal.indexOf(',')===-1){
                             selArr.push(selVal);
@@ -898,6 +1048,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                             });
                         }
                         layui.formSelects.value(item.id,selArr);
+                        $('input','[fs_id='+item.id+']').removeClass('layui-form-danger');
                     }  
                 });
             }
@@ -906,8 +1057,28 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                 $.each(this.switchList,function(i,item){
                     var _checked=valueJson[item] == 1?true:false;
                     $('[name='+item+']','#'+_this._cfg.id).prop('checked',_checked);
-                    layui.form.render('checkbox');
                 })
+            }
+            //radio
+            if(this.radioList.length>0){
+                $.each(this.radioList,function(i,item){
+                    var _radios=$('[name='+item.name+']','#'+_this._cfg.id);
+                    for(var k=0,l=_radios.length;k<l;k++){
+                        var elm=$(_radios[k]);
+                        elm.prop('checked',elm.attr('value')==valueJson[item.name]?true:false);
+                    }
+                });
+            }
+            if(this.checkList.length>0){
+                $.each(this.checkList,function(i,item){
+                    var checkboxs=$('[name='+item.name+']','#'+_this._cfg.id);
+                    for(var k=0,l=checkboxs.length;k<l;k++){
+                        var elm=$(checkboxs[k]),
+                            vi=valueJson[item.name],
+                            rs=vi!==undefined &&(vi.indexOf(',')!=-1 ? vi.split(','):[vi]);
+                        elm.prop('checked', $.inArray( elm.attr("value"), rs)!=-1?true:false );
+                    }
+                });
             }
             //textarea
             $('textarea','#'+this._cfg.id).each(function(){
@@ -943,7 +1114,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                         }
                     }
                 }
-                if(this.pic  && this.preview && (valueJson[picName]!=='' || valueJson[picName]!=='0')){
+                if(this.pic  && this.preview && (valueJson[picName]!='' && valueJson[picName]!='0')){
                     if(valueJson[picName].indexOf(',')===-1){
                         pimg.push('<span><img src="'+ app.url+'file/view?id='+valueJson[picName] +'" class="layui-upload-img"><i class="layui-icon mod-img" data-id='+valueJson[picName]+'>&#x1006;</i></span>');
                         this.pic={0:valueJson[picName]};
@@ -978,36 +1149,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                 }
                 
             }
-            if($.type(extra)==='object'){ //
-                $.each(extra,function(i,item){
-                    if( $('#'+_this.mapId).length>0 && _this._cfg.map.admin){
-                        if(i=='admin' && item){
-                            $('button','#'+_this.popupPara.btnToAdmin).each(function(){
-                                $(this).hide();
-                            });
-                        }else{
-                            _this.map=app.ui.map.init({id:_this.mapId});
-                            _this.map.ready(function () {
-                               if(i=='points' || i=='cirRadius' || i=='cirCenter'){
-                                    _this[i]=valueJson[item];
-                                    if(i=='points' && _this[i]){
-                                        if(_this[i][_this[i].length-1]==','){
-                                            var newStr=_this[i].slice(0,_this[i].length-2);
-                                        }
-                                        var pointList=newStr?newStr.split(','):_this[i].split(','),
-                                            newList=[];
-                                        for(var j=0;j<pointList.length;j+=2){
-                                            newList.push(_this.map.createPoint(pointList[j],pointList[j+1])); 
-                                        }
-                                        _this.map.createOverlay(newList,'line2');
-                                    }
-                                }
-                            });
-                        }
-                       
-                    }
-                });
-            }
+            layui.form.render();
         },
         aliasSet:function(valueJson,aliasJson){
             //后台JSON数据,需要显示名称的对象 {'待回显的元素name/待回显的元素data-name':'显示的后台key'},
@@ -1035,13 +1177,30 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                 return ;
             }else{
                 $.each(aliasJson,function(i,item){
-                        var elm=$('[name='+i+']','#'+_this._cfg.id);
-                        if( elm.length>0){
-                            elm.val(valueJson[item]);
-                        }
+                    var elm=$('[name='+i+']','#'+_this._cfg.id);
+                    if( elm.length>0){
+                        elm.val(valueJson[item]);
+                    }
                 });
             }
             
+        },
+        disabled:function(disArr,bool){
+            var bool=bool!==undefined?bool:false,
+                _this=this;
+            $.each(disArr,function(i,item){
+                var elm=$('[name='+item+']','#'+_this._cfg.id);
+                if( elm.length>0 ){
+                    elm.prop('disabled',bool?true:false);
+                }
+            });
+        },
+        selDisabled:function(names){
+            var _this=this;
+            $.each(names,function(i,item){
+                var bool=item?true:false;
+                bool ? layui.formSelects.disabled(_this._cfg.id+'_'+i):layui.formSelects.undisabled(_this._cfg.id+'_'+i);
+            });
         },
         close:function(){
             if(this._cfg.index){
@@ -1051,23 +1210,33 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
         },
         popup:function(cfg){
             var btns = [],btnEvt = {},_this=this;
-            var form=layui.form;
-            form.render();
+            layui.form.render();
             if(cfg &&  cfg.btns){}else{
                 var cfg=cfg ? cfg:{};
                 cfg.btns =[{'title':'确定',handle:'','yes':true},{'title':'取消',handle:''}];
             }
-            for(var idx=0;idx<cfg.btns.length;idx++){
-                btns.push(cfg.btns[idx].title);
-                if(cfg.btns[idx].yes){//确定按钮
-                    continue;
+            if(cfg.btns.length==1){
+                btns.push(cfg.btns[0].title);
+                if(!cfg.btns[0].handle){
+                    btnEvt['yes'] =function(){
+                        _this.close();
+                    }
                 }else{
-                    if(!cfg.btns[idx].handle){
-                        btnEvt['btn'+(idx+1)] =function(){
-                            _this.close();
-                        }
+                    btnEvt['yes']=cfg.btns[0].handle;
+                }
+            }else if(cfg.btns.length>1){
+                for(var idx=0;idx<cfg.btns.length;idx++){
+                    btns.push(cfg.btns[idx].title);
+                    if(cfg.btns[idx].yes){//确定按钮
+                        continue;
                     }else{
-                        btnEvt['btn'+(idx+1)]=cfg.btns[idx].handle;
+                        if(!cfg.btns[idx].handle){
+                            btnEvt['btn'+(idx+1)] =function(){
+                                _this.close();
+                            }
+                        }else{
+                            btnEvt['btn'+(idx+1)]=cfg.btns[idx].handle;
+                        }
                     }
                 }
             }
@@ -1082,46 +1251,36 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                 btn:btns,
                 anim:app.ui.anim,
                 success: function(layero, index){  
+                    if(cfg.height){
+                        $('.yy-m-aq-popup','#'+_this._cfg.id ).height(cfg.height-87-16); 
+                    }
                     cfg.success && cfg.success();
                 },
                 yes:function(index, layero){
                     layero.find('#'+_this._cfg.id+' .ycyaAqYes').click();
                 },
-                // full:function(layero){
-                //     if(cfg.full ){
-                //         var parent=layero;
-                //         layero.find($('#'+_this.mapId)).height( layero.height()-40-43-10);
-                //         layero.find($('#'+_this.mapId)).width( layero.width()-_this._cfg.map.lf-30);
-                //     }
-                // },
-                // min:function(){
-                //     _this.close();
-                // },
-                // restore:function(layero){
-                //     layero.find($('#'+_this.mapId)).height( _this._cfg.map.lf);
-                //     layero.find($('#'+_this.mapId)).width( _this._cfg.map.rt-50);
-                // },
-                cancel:function(){
+                end:function(){
                     $('#'+_this._cfg.id).hide();
+                    cfg.end && cfg.end();
                 }
             };
             var h = cfg.height || ($('#'+this._cfg.id).height()+40+43+2), //加上layer title以及btns高度，减去默认按钮组的高度，预留2像素
                 wh = $(window).height();
-                if(h<170){
-                    h=170;
-                }
-                if( h>wh){
-                    h=wh-60;
-                    initCfg.area=[w+'px',h+'px'];
-                }
-                if(cfg.height){
-                    initCfg.area=[w+'px',cfg.height+'px'];
-                }
+            if(h<170){
+                h=170;
+            }
+            if( h>wh){
+                h=wh-60;
+                initCfg.area=[w+'px',h+'px'];
+            }
+            if(cfg.height){
+                initCfg.area=[w+'px',cfg.height+'px'];
+            }
             this._cfg.index=layer.open($.extend(initCfg,btnEvt));
         },
         tree:function(cfg){
             if(!cfg ||!cfg.url ){
-                 return layer.msg('para error');
+                return layer.msg('para error');
             }
             this.treeIndex=layer.open({
                 type: 2, 
@@ -1145,12 +1304,15 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                         }
                     }
                     layer.close(index);
+                },
+                end:function(){
+                    cfg.end && cfg.end();
                 }
             });
         },
         getPlace:function(cfg){
             if(!cfg ||!cfg.url ){
-               return layer.msg('para error');
+                return layer.msg('para error');
             }
             this.treeIndex=layer.open({
                 type: 2, 
@@ -1168,22 +1330,22 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
         },
         createAdmin:function(){
             var aid='ycyaMapAdmin';
-                this.adminBoxId=aid;
-                this.adminTreeId='ycyaMapAdminTree';
+            this.adminBoxId=aid;
+            this.adminTreeId='ycyaMapAdminTree';
             if( $('#'+aid).length==0){
                 $('body').append( '<div id="'+aid+'" class="m-none"><div style="overflow-y: auto;height:300px"><ul id="'+this.adminTreeId+'" class="ztree"></ul></div></div>');
             }
             var ztreeflag=false;
-                $('script').each(function(){
-                    if( $(this)[0].outerHTML.indexOf('ztree.all.js')!==-1 ){
-                        ztreeflag=true;
-                        return false; 
-                    }
-                });
+            $('script').each(function(){
+                if( $(this)[0].outerHTML.indexOf('ztree.all.js')!==-1 ){
+                    ztreeflag=true;
+                    return false; 
+                }
+            });
             if(!ztreeflag){
                 var _jsLoader=new YcyaLoader();
                 _jsLoader.loadFileList([getContentPath()+'/res/dep/zTree/css/zTreeStyle/zTreeStyle.css',
-                getContentPath()+'/res/dep/zTree/js/jquery.ztree.all.js'],function(){});
+                    getContentPath()+'/res/dep/zTree/js/jquery.ztree.all.js'],function(){});
             }
         },
         openAdmin:function(){
@@ -1198,9 +1360,9 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                 btn: ['确定', '取消'],
                 yes: function () {
                     if (_this.adminTree.getSelectedNodes().length==0){
-                       return layer.msg('请选择行政区域', {
+                        return layer.msg('请选择行政区域', {
                             time: 1000
-                       });
+                        });
                     }
                     var node = _this.adminTree.getSelectedNodes()[0],
                         pNode = node.getParentNode(),
@@ -1221,7 +1383,7 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                         _this.map.clear(); //清除地图覆盖物
                         var count = rs.boundaries.length; //行政区域的点有多少个
                         if (count === 0) {
-                           return layer.msg('未能获取当前输入行政区域');
+                            return layer.msg('未能获取当前输入行政区域');
                         }
                         var pointArray = [];
                         for (var i = 0; i < count; i++) {
@@ -1257,12 +1419,8 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
                         callback: {
                             onClick: function (event, treeId, NowtreeNode) {
                                 var d=_this.adminTreeData;
-                                if (NowtreeNode.check_Child_State >= 0) {
-                                    return ;
-                                }
-                                if (d== undefined) {
-                                    return ;
-                                }
+                                if (NowtreeNode.check_Child_State >= 0) {return ;}
+                                if (d== undefined) { return ;}
                                 if (NowtreeNode.level == 0) {
                                     for (var i in d) {
                                         if (d[i].adcode == NowtreeNode.adcode) {
@@ -1330,31 +1488,41 @@ var IFormItem = new Interface('IFormItem', ['get','getJson','getArray', 'set', '
         selLinkage:function(opt){
             layui.formSelects.on(opt.clickSel, function(id, vals, val, isAdd, isDisabled){
             //id:点击select的id,vals:当前select已选中的值,val:当前select点击的值,isAdd:当前操作选中or取消,isDisabled当前选项是否是disabled
-                var all,allStr=[];
-                if(isAdd){
-                    all=vals.concat(val);
-                }else{
-                    $.each(vals,function(i,item){
-                        if(item.val===val.val){
-                            vals.splice(i,1);
-                            return false;
-                        }
-                    });
-                    all=vals;
-                }
-                $.each(all,function(i,item){
-                    allStr.push(item.val);
-                });
-                var testCfg=opt.cfg,
+                var all,allStr=[],
+                    _count=opt.count!==undefined ?opt.count:0,
+                    testCfg=opt.cfg,
                     _alias=opt.keyName ?opt.keyName:'id';
-                testCfg.data[_alias]=allStr.join(',');
+                if(_count===1){
+                    testCfg.data[_alias]=val.value;
+                }else{
+                    // if(isAdd){
+                    //     all=vals.concat(val);
+                    // }else{
+                    //     $.each(vals,function(i,item){
+                    //         if(item.val===val.val){
+                    //             vals.splice(i,1);
+                    //             return false;
+                    //         }
+                    //     });
+                    //     all=vals;
+                    // }
+                    $.each(vals,function(i,item){
+                        allStr.push(item.value);
+                    });
+                    testCfg.data[_alias]=allStr.join(',');
+                }
                 var cloneCfg=$.extend(true,{},app.ui.formSelectsCfg,{type:opt.type || "post",searchUrl:opt.url});
                 var formCfg=$.extend(true,cloneCfg,testCfg);
                 layui.formSelects.data(opt.linkSel,'server',formCfg);
             },true);
+        },
+        selectRender:function(cfg){//formSelects render
+            var cloneCfg=$.extend(true,{},app.ui.formSelectsCfg,{type:cfg.type||'post',searchUrl:cfg.url});
+            var formCfg=$.extend(true,cloneCfg,cfg);
+            layui.formSelects.data(cfg.id,'server',formCfg);
         }
     };
-    ycya.autoform = function(cfg){
+    yy.autoform = function(cfg){
         return new Autoform(cfg);
     }
 })(app.ui);
@@ -1389,7 +1557,7 @@ app.ui.util={
             }
         }
     }
-}
+};
 app.ui.form={
     _cfg:{win:null},
     init:function(cfg){
@@ -1437,7 +1605,7 @@ app.ui.form={
     setData:function(data){
         return this._cfg.win.setData(data);
     }
-}
+};
 app.ui.search = {
     _cfg:{
         id:'',              //容器ID
@@ -1502,7 +1670,7 @@ app.ui.search = {
 
         }
     }
-}
+};
 app.ui.tree = {
     _cfg:{
         data:{
@@ -1549,7 +1717,7 @@ app.ui.tree = {
     getTree:function(){
         return this.tree;
     }
-}
+};
 app.ui.left = {
     _cfg:{
         id:'',              //容器ID
@@ -1572,7 +1740,7 @@ app.ui.left = {
         }
         this.fields = yfields;
         var btns = this._cfg.btns;
-        app.ui.util.btnRender(btns,dom,['layui-btn','layui-btn-sm'],'btnLeft_');
+        btns &&  app.ui.util.btnRender(btns,dom,['layui-btn','layui-btn-sm'],'btnLeft_');
         var leftHeight = $(window).height() - 84;
         $('#yui-left-nav').css('height',leftHeight+'px');
         $(window).resize(function(){
@@ -1654,69 +1822,102 @@ app.ui.left = {
             }) ; 
         } 
     }
-}
-app.ui.grid = {
-    _cfg:{
-        id:'ycyaGrid',   
-        page:true,
-        height:'full-104',
-        request: {
-            pageName: 'pageNo', //页码的参数名称，默认：page
-            limitName: 'pageSize' //每页数据量的参数名，默认：limit
-        },
-        text: {none: '暂无相关数据'},
-        limit: 20, //每页显示的条数
-        limits: [10, 20, 50],
-        method: 'post',
-        where:{}
-    },
-    init:function(cfg){
-        $.extend(this._cfg,cfg);
-        var table = layui.table;
-        if(cfg.btns){
-            //捕获done事件
-            this._cfg.done=function(){
-                ycyaTableBtn(cfg.btns);
+};
+(function(au){
+    var Grid=function(cfg){
+        this._cfg={
+            id:'ycyaGrid',   
+            page:true,
+            height:'full-104',
+            request: {
+                pageName: 'pageNo', //页码的参数名称，默认：page
+                limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            },
+            text: {none: '暂无相关数据'},
+            limit: 20, //每页显示的条数
+            limits: [10, 20, 50],
+            method: 'post',
+            where:{}
+        };
+    }
+    Grid.prototype={
+        init:function(cfg){
+            var that=this;
+            $.extend(this._cfg,cfg);
+            var table = layui.table;
+            if(cfg.btns){
+                //捕获done事件
+                this._cfg.done=function(res){
+                    ycyaTableBtn(res,cfg.btns,cfg.parent);
+                    cfg.hover && that.hoverOpenImg();
+                }
             }
-        }
-        table.render(this._cfg);
-        return this;
-    },
-    qry:function(qryCfg){
-        this._cfg.where = {};
-        $.extend(this._cfg.where,qryCfg);
-        var table = layui.table;
-        table.render(this._cfg);
-    },
-    rowBtn:function(rowBtnCfg){
-        var cssArr = app.ui.util.cssMerge(rowBtnCfg,['layui-btn','layui-btn-xs']);
-        return '<a class="'+cssArr.join(' ')+'" lay-event="'+rowBtnCfg.event+'">'+rowBtnCfg.title+'</a>';
-    },
-    getRows:function(flag){//flag boolean ,true返回数据id集合
-        if(!flag){
-            return layui.table.checkStatus(this._cfg.id);
-        }
-        var ids=[];
-        $.each(layui.table.checkStatus(this._cfg.id).data,function(i,item){
-            item.id && ids.push(item.id);
-        });
-        return ids.join(',');
-    },
-    delRows:function(callback){
-        var rows=layui.table.checkStatus(this._cfg.id);
-        if(rows.data.length==0){
-            return layer.msg('请勾选要删除的数据',{time:2000});
-        }else{
+            this.tableIns =table.render(this._cfg);
+            return this;
+        },
+        qry:function(qryCfg,extraPara){
+            this._cfg.where = {};
+            $.extend(this._cfg.where || {},qryCfg);
+            var table = layui.table,
+                aliasCfg=$.extend(true,{},this._cfg,extraPara);
+            // table.render(aliasCfg);
+            this.tableIns .reload(aliasCfg);
+        },
+        rowBtn:function(rowBtnCfg){
+            var cssArr = app.ui.util.cssMerge(rowBtnCfg,['layui-btn','layui-btn-xs']);
+            return '<a class="'+cssArr.join(' ')+'" lay-event="'+rowBtnCfg.event+'">'+rowBtnCfg.title+'</a>';
+        },
+        getRows:function(flag){//flag boolean ,true返回数据id集合
+            if(!flag){
+                return layui.table.checkStatus(this._cfg.id);
+            }
             var ids=[];
-            $.each(rows.data,function(i,item){
+            $.each(layui.table.checkStatus(this._cfg.id).data,function(i,item){
                 item.id && ids.push(item.id);
             });
-            layer.confirm('确定删除?',function(index){
-                callback && callback(ids.join(','),index);
+            return ids.join(',');
+        },
+        delRows:function(callback){
+            var rows=layui.table.checkStatus(this._cfg.id);
+            if(rows.data.length==0){
+                return layer.msg('请勾选要删除的数据',{time:2000});
+            }else{
+                var ids=[];
+                $.each(rows.data,function(i,item){
+                    item.id && ids.push(item.id);
+                });
+                layer.confirm('确定删除?',function(index){
+                    callback && callback(ids.join(','),index);
+                });
+            }
+        },
+        hoverOpenImg:function(){
+            var img_show = null; // tips提示
+            $('td img').hover(function(){
+                var img = "<img class='img_msg' src='"+$(this).attr('src')+"' style='width:130px;' />";
+                img_show = layer.tips(img, this,{
+                    tips:[2, 'rgba(41,41,41,.5)']
+                    ,area: ['160px']
+                    ,time:80000
+                });
+            },function(){
+                layer.close(img_show);
             });
+            // $('td img').attr('style','max-width:70px');
         }
-    }
-}
+    };
+    au.grid= {
+        init:function(cfg){
+            return new Grid().init(cfg);
+        }
+    };
+    au.grid.qry= Grid.prototype.qry;
+    au.grid.rowBtn= Grid.prototype.rowBtn;
+    au.grid.getRows= Grid.prototype.getRows;
+    au.grid.delRows= Grid.prototype.delRows;
+    au.grid.hoverOpenImg= Grid.prototype.hoverOpenImg;
+})(app.ui);
+
 app.ui.page.list={
     init:function(cfg){
         if(cfg.title)document.title = cfg.title;//初始化title
@@ -1725,18 +1926,10 @@ app.ui.page.list={
         if(cfg.grid)this.grid = app.ui.grid.init($.extend(cfg.grid,{elem:'#yui-grid'}));
         return this;
     },
-    getSearch:function(){
-        return this.search;
-    },
-    getGrid:function(){
-        return this.grid;
-    },
-    getLeft:function(){
-        return this.left;
-    },
-    getTree:function(){
-        return this.left.tree.getTree();
-    }
+    getSearch:function(){return this.search;},
+    getGrid:function(){return this.grid;},
+    getLeft:function(){return this.left;},
+    getTree:function(){return this.left.tree.getTree();}
 }
 //bind popup
 app.ui.selected={
@@ -1751,7 +1944,7 @@ app.ui.selected={
         this.name=cfg.item;
         return this;
     }
-}
+};
 app.ui.selectedItem={
     init:function(cfg){
         if(!cfg || !cfg.sel || !cfg.row ){
@@ -1786,15 +1979,16 @@ app.ui.selectedItem={
             })
         return _span.append(_i);
     }
-}
+};
 app.ui.bindRail={//一对一绑定,无显示选中部分
     open:function(cfg){
         if(!cfg.url){
             return layer.msg('url error or id error');
         }
+        var _this=this;
         layer.open({
             type:2,
-            titel:'绑定围栏',
+            title:cfg.title || '绑定围栏',
             area: ['500px','406px'],
             content:cfg.url,
             anim:app.ui.anim,
@@ -1804,12 +1998,15 @@ app.ui.bindRail={//一对一绑定,无显示选中部分
                 //     $(this).hide();
                 // });
                 var iframeWin = $(layero).find('iframe')[0].contentWindow;
-                    iframeWin.returnGrid().qry(cfg.data);
-                    $(body).find("input.dataId").val(cfg.selected.id);
+                iframeWin.returnGrid().qry(cfg.data,{url:cfg.gridUrl});
+                _this.grid=iframeWin.returnGrid();
+                cfg.selected && cfg.selected.id !==undefined &&  ($(body).find("input.dataId").val(cfg.selected.id));
+                cfg.success && cfg.success();
             }
-        })
+        });
+        return this;
     }
-}
+};
 app.ui.bindFalt={//一对多绑定,显示选中部分
     open:function(cfg){
         if(!cfg.url || !cfg.selected){
@@ -1817,7 +2014,7 @@ app.ui.bindFalt={//一对多绑定,显示选中部分
         }
         layer.open({
             type:2,
-            titel:'绑定设备',
+            title:cfg.title || '绑定设备',
             area: ['500px','479px'],
             content:cfg.url,
             btn:['确定','取消'],
@@ -1828,8 +2025,8 @@ app.ui.bindFalt={//一对多绑定,显示选中部分
                 //     $(this).hide();
                 // });
                 var iframeWin = $(layero).find('iframe')[0].contentWindow;
-                    iframeWin.returnGrid().qry(cfg.data);
-                    $(body).find("input.dataId").val(cfg.selected.id);
+                iframeWin.returnGrid().qry(cfg.data,{url:cfg.gridUrl});
+                $(body).find("input.dataId").val(cfg.selected.id);
             },
             yes:function(index,layero){
                 var s= $(layero).find('iframe')[0].contentWindow.returnSelected();
@@ -1841,18 +2038,19 @@ app.ui.bindFalt={//一对多绑定,显示选中部分
             }
         })
     }
-}
+};
 app.ui.page.bindpopup={
     init:function(cfg){
+        this.cfg=cfg;
         if(cfg.search){this.search=app.ui.search.init(cfg.search,{dom:$('#pop-search')})}
         if(cfg.selected){this.selected=app.ui.selected.init(cfg.selected)}
-        if(cfg.grid){this.grid=app.ui.grid.init($.extend(cfg.grid,{height:cfg.selected?225:288,elem:'#pop-grid'}))}
+        if(cfg.grid){this.tableGrid=app.ui.grid.init($.extend(cfg.grid,{height:cfg.selected?225:288,elem:'#pop-grid'}))}
         return this;
     },
-    getGrid:function(){return this.grid},
+    getGrid:function(){return this.tableGrid},
     getSearch:function(){return this.search},
     getSelected:function(){return this.selected},
-}
+};
 //report
 app.ui.reportTitle={
     _cfg:{
@@ -1899,7 +2097,7 @@ app.ui.reportTitle={
             $('#'+item).text(cfg[i]);
         });
     }
-}
+};
 app.ui.echarts={
     barlineCfg:{
         id:'yui-report-echart',              //容器ID
@@ -1930,7 +2128,7 @@ app.ui.echarts={
         dataxName:[],         //x轴name
         YMTtooltip:"",        //鼠标提示,加在头部
         YMBtooltip:"",        //鼠标提示,加在尾部
-        xaxisClocr:['#333', '#666', '#444', '#f6f6f6', '#f6f6f6', '#fff'], //x轴线颜色 顺序为: 具体数值、坐标轴小标记、坐标轴、分割区域线 、间隔颜色
+        xaxisClocr:['#333', '#666', '#444', '#f6f6f6', '#f6f6f6', '#fff'], //x轴线颜色 顺序为: 坐标轴、坐标轴小标记、具体数值、分割区域线 、间隔颜色
         yaxisClocr:['#333', '#666', '#444', '#f6f6f6', '#f6f6f6', '#fff'], //y轴线颜色 顺序为: 具体数值、坐标轴小标记、坐标轴、分割区域线 、间隔颜色
         YMxaxis : {  //X轴设置
             xrotate: 30,//字体倾斜角度
@@ -1948,7 +2146,7 @@ app.ui.echarts={
             yaxisTick: false,//坐标轴小标记
             ysplitLine: false,//分割区域线
             yaxisLabel: true, //y轴具体数值
-            ytextStyle: '#444',//y轴数值颜色
+            ytextStyle: '#666',//y轴数值颜色
             yvalue: 'value',//y轴值
             ysplitArea: false,//间隔区域
             ymargin: 10,//标题与轴线距离
@@ -2012,343 +2210,317 @@ app.ui.echarts={
         $.extend(true,this.barlineCfg,cfg);
         var bl=this.barlineCfg,
             _this=this;
-        var jsLoader = new YcyaLoader();
-        /*  //处理数据，展示题目
-        for(var key in cfg.valueJson){
-            bl.datalName.push(key);
-        }
-        //处理数据成echart格式
-        var seriesList=[];
-        //处理barWidth
-        var viewWh=$('body').width()*(1-parseInt( bl.YMgrid.gleft)/100- parseInt(bl.YMgrid.gright)/100 ),
-            oneWh=viewWh/ bl.dataxName.length,
-            oneBarWh=(oneWh-40)/bl.datalName.length; 
-            var bwh=Math.ceil(bl.minBarWidth*1.3)*bl.datalName.length,
-                bbnumber=parseInt(viewWh/bwh),
-                dataZoom_end;
-            if (bl.dataxName.length > bbnumber) {
-                dataZoom_end = 100 - ((bl.dataxName.length -bbnumber+1) / bl.dataxName.length) * 100;
-            } else {
-                dataZoom_end = 100;
-            }
-        for(var i=0;i< bl.datalName.length;i++){
-            var oneItem={
-                name: bl.datalName[i],
-                type:bl.type,
-                data:cfg.valueJson[bl.datalName[i]]
-            };
-            if(oneBarWh<bl.minBarWidth){
-                oneItem.barWidth=bl.minBarWidth;
-            }else if(oneBarWh>bl.maxBarWidth){
-                oneItem.barWidth=bl.maxBarWidth;
-            };
-            if(bwh>oneWh){
-                bl.YMdataZoom.dzshow=true;
-                bl.YMdataZoom.dzend=dataZoom_end;
-            }
-            seriesList.push(oneItem);
-            
-        } */
-        // jsLoader.loadFileList([getContentPath()+'/res/dep/echart/echarts.min.js'],function(){
-            this.blChart = echarts.init( document.getElementById( bl.id) );
-                option = {
-                // 各统计注解
-                    legend: {
-                        show: bl.YMlegend.lshow,
-                        type: 'scroll',
-                        orient: bl.YMlegend.lorient,
-                        icon:  bl.YMlegend.licon,
-                        data: bl.datalName,
-                        align: 'left',
-                        x:bl.YMlegend.lalign,
-                        textStyle: {
-                        color: bl.YMlegend.lcolor,
-                        fontSize: 14,
-                        },
-                        itemWidth: 20,
-                        itemHeight: 10
-                },
-                // 统计图背景色
-                backgroundColor: bl.stbackgrond,
-                //统计图名称
-                title: {
-                    x: bl.YMtitle.txalign,
-                    show: bl.YMtitle.tshow,
-                    text: bl.YMtitle.ttext,
+        this.blChart = echarts.init( document.getElementById( bl.id) );
+            option = {
+            // 各统计注解
+                legend: {
+                    show: bl.YMlegend.lshow,
+                    type: 'scroll',
+                    orient: bl.YMlegend.lorient,
+                    icon:  bl.YMlegend.licon,
+                    data: bl.datalName,
+                    align: 'left',
+                    x:bl.YMlegend.lalign,
                     textStyle: {
-                        fontSize: bl.YMtitle.ttfontsize,
-                        color: bl.YMtitle.ttcolor
+                    color: bl.YMlegend.lcolor,
+                    fontSize: 14,
                     },
-                    subtext: bl.YMtitle.tsubtext,
-                    subtextStyle: {
-                        fontSize: bl.YMtitle.tstfontsize,
-                        color: bl.YMtitle.tstcolor
-                    }
+                    itemWidth: 20,
+                    itemHeight: 10
+            },
+            // 统计图背景色
+            backgroundColor: bl.stbackgrond,
+            //统计图名称
+            title: {
+                x: bl.YMtitle.txalign,
+                show: bl.YMtitle.tshow,
+                text: bl.YMtitle.ttext,
+                textStyle: {
+                    fontSize: bl.YMtitle.ttfontsize,
+                    color: bl.YMtitle.ttcolor
                 },
-                // 各统计颜色
-                color: bl.colorList,
-                // 鼠标移入显示
-                tooltip: {
-                    trigger: 'axis',
-                    backgroundColor: '#fff',
-                    borderWidth: 1,
-                    borderColor: '#ccc',
-                    padding: 10,
-                    textStyle: {
-                        color: '#000'
-                    },
-                    axisPointer: {
-                        type: 'shadow'
-                    },
-                    formatter: function (params) {
-                        {
-                            var relVal = bl.YMTtooltip + params[0].name + "<br/>";
-                            for (j = 0; j < params.length; j++) {
-                                relVal += params[j].seriesName + ' : ' + params[j].value + "<br/>";
-                            }
-                            return relVal+bl.YMBtooltip;
-                        }
-                    }
-                },
-                // 工具栏视图
-                toolbox: {
-                    itemSize: bl.YMtoolbar.itemSize,
-                    feature: {
-                        dataView: { show: bl. YMtoolbar.dataView },
-                        magicType: {
-                            show: bl.YMtoolbar.magicType,
-                            type: bl.YMtoolbar.type //折线图与柱状图转化 堆砌与分散
-                        },
-                        restore: {
-                            show: bl.YMtoolbar.restore  //刷新
-                        },
-                        saveAsImage: {
-                            show: bl.YMtoolbar.saveAsImage //保存
-                        }
-                    }
-                },
-                // 控制显示个数
-                dataZoom: [
-                    {
-                        height:bl.YMdataZoom.dzheight,
-                        type: 'slider',
-                        show:bl.YMdataZoom .dzshow,
-                        fillerColor:bl.YMdataZoom.dzfillerColor,
-                        start: 0,
-                        end: bl.YMdataZoom.dzend,
-                        handleSize: 0,
-                        backgroundColor:bl.YMdataZoom.dzbackgroundColor//背景色
-                    }
-                ],
-                //统计图位置
-                grid: {
-                    left: bl.YMgrid.gleft,
-                    right: bl.YMgrid.gright,
-                    bottom: bl.YMgrid.gbottom,
-                    top: bl.YMgrid.gtop,
-                    containLabel: true
-                },
-                xAxis:[{
-                    show:true,
-                    type: 'category',
-                    data: [], //bl.dataxName
-                    axisLine: {
-                        show: bl.YMxaxis.xaxisLine,
-                        lineStyle: {
-                            color: bl.xaxisClocr[0],
-                            width: 1,
-                            type: "solid"
-                        }
-                    },
-                    axisTick: {
-                        show: bl.YMxaxis.xaxisTick,
-                        lineStyle: {
-                            color: bl.xaxisClocr[1]
-                        }
-                    },
-                    axisLabel: {
-                        show: bl.YMxaxis.xaxisLabel,
-                        margin: bl.YMxaxis.xmargin,
-                        rotate: bl.YMxaxis.xrotate,
-                        textStyle: {
-                            color: bl.xaxisClocr[2]
-                        }
-                    },
-                    splitLine: {
-                        show: bl.YMxaxis.xsplitLine,
-                        textStyle: {
-                            color: bl.xaxisClocr[3]
-                        }
-                    },
-                    splitArea: {
-                        show: bl.YMxaxis.xsplitArea,
-                        areaStyle: {
-                            color: [bl.xaxisClocr[4],bl.xaxisClocr[5]]
-                        }
-                    }
-                }],
-                yAxis: [
-                    {
-                    min: 0,
-                    minInterval: bl.YMyaxis.yminInterval,
-                        type:bl.YMyaxis.yvalue,
-                    name:bl.YMyaxis.yname,
-                    axisLabel: {
-                        margin: bl.YMyaxis.ymargin,
-                        rotate: bl.YMyaxis.yrotate,
-                        textStyle: {
-                            color: bl.yaxisClocr[0]
-                        }
-                    },
-                    axisTick: {
-                        show: bl.YMyaxis.yaxisTick,
-                        lineStyle: {
-                            color: bl.yaxisClocr[1]
-                        }
-                    },
-                    axisLine: {
-                        show: bl.YMyaxis.yaxisLine,
-                        lineStyle: {
-                            color: bl.yaxisClocr[2]
-                        },
-                    },
-                    splitLine: {
-                        show: bl.YMyaxis.ysplitLine,
-                        lineStyle: {
-                            color: bl.yaxisClocr[3]
-                        },
-                    },
-                    splitArea: {
-                            show: bl.YMyaxis.ysplitArea,
-                            areaStyle: {
-                                color:[ bl.yaxisClocr[4], bl.yaxisClocr[5]]
-                            }
-                        }  
-                },
-                // 第二根坐标轴
-                {
-                    show:bl.YMsyaxis.syshow,
-                    name:bl.YMsyaxis.syname,
-                    min: 0,
-                    minInterval: bl. YMsyaxis.syminInterval,
-                    type: bl.YMsyaxis.syvalue,
-                    position:'right',
-                    axisLabel: {
-                        margin: bl.YMsyaxis.symargin,
-                        rotate: bl.YMsyaxis.syrotate,
-                        textStyle: {
-                            color: bl.yaxisClocr[0]
-                        }
-                    },
-                    axisTick: {
-                        show: bl.YMsyaxis.syaxisTick,
-                        lineStyle: {
-                            color: bl.yaxisClocr[1]
-                        }
-                    },
-                    axisLine: {
-                        show: bl.YMsyaxis.syaxisLine,
-                        lineStyle: {
-                            color: bl.yaxisClocr[2]
-                        },
-                    },
-                    splitLine: {
-                        show: bl.YMsyaxis.sysplitLine,
-                        lineStyle: {
-                            color: bl.yaxisClocr[3]
-                        },
-                    },
-                    splitArea: {
-                            show: bl.YMsyaxis.sysplitArea,
-                            areaStyle: {
-                                color: [bl.yaxisClocr[4], bl.yaxisClocr[5]]
-                            }
-                        }              
+                subtext: bl.YMtitle.tsubtext,
+                subtextStyle: {
+                    fontSize: bl.YMtitle.tstfontsize,
+                    color: bl.YMtitle.tstcolor
                 }
-                    // 第三根坐标轴
-                //      {
-                //        show:bl.YMtyaxis.tyshow,
-                //        minInterval: bl.YMsyaxis.syminInterval,
-                //        type: bl.YMtyaxis.tyminInterval,
-                //        position:'right',
-                //        name:bl.YMtyaxis.tyname,
-                //        offset: 80,
-                //        axisLabel: {
-                //            margin: bl.YMtyaxis.tymargin,
-                //            rotate: bl.YMtyaxis.tyrotate,
-                //            textStyle: {
-                //                color: bl.yaxisClocr[0]
-                //            }
-        
-                //        },
-                //        axisTick: {
-                //            show: bl.YMtyaxis.tyaxisTick,
-                //            lineStyle: {
-                //                color: bl.yaxisClocr[1]
-                //            }
-                //        },
-                //        axisLine: {
-                //            show: bl.YMtyaxis.tyaxisLine,
-                //            lineStyle: {
-                //                color: bl.yaxisClocr[2]
-                //            },
-                //        },
-                //        splitLine: {
-                //            show: bl.YMtyaxis.tysplitLine,
-                //            lineStyle: {
-                //                color: bl.yaxisClocr[3]
-                //            },
-                //        },
-                //        splitArea: {
-                //             show: bl.YMtyaxis.tysplitArea,
-                //             areaStyle: {
-                //                 color: [bl.yaxisClocr[4],bl.yaxisClocr[5]]
-                //             }
-                //         } 
-                //    }
-                ],
-                // 具体数值
-                series:[] //seriesList
-                };
-            this.blChart .setOption(option);
-            this.blChart .showLoading();
-            $(window).resize(function(){
-                _this.blChart .resize();
-            }).resize();
-        // }); 
+            },
+            // 各统计颜色
+            color: bl.colorList,
+            // 鼠标移入显示
+            tooltip: {
+                trigger: 'axis',
+                backgroundColor: '#fff',
+                borderWidth: 1,
+                borderColor: '#ccc',
+                padding: 10,
+                textStyle: {
+                    color: '#000'
+                },
+                axisPointer: {
+                    type: 'shadow'
+                },
+                formatter: function (params) {
+                    {
+                        var relVal = bl.YMTtooltip + params[0].name + "<br/>";
+                        for (j = 0; j < params.length; j++) {
+                            relVal += params[j].seriesName + ' : ' + params[j].value + "<br/>";
+                        }
+                        return relVal+bl.YMBtooltip;
+                    }
+                }
+            },
+            // 工具栏视图
+            toolbox: {
+                itemSize: bl.YMtoolbar.itemSize,
+                feature: {
+                    dataView: { show: bl. YMtoolbar.dataView },
+                    magicType: {
+                        show: bl.YMtoolbar.magicType,
+                        type: bl.YMtoolbar.type //折线图与柱状图转化 堆砌与分散
+                    },
+                    restore: {
+                        show: bl.YMtoolbar.restore  //刷新
+                    },
+                    saveAsImage: {
+                        show: bl.YMtoolbar.saveAsImage //保存
+                    }
+                }
+            },
+            // 控制显示个数
+            dataZoom: [
+                {
+                    height:bl.YMdataZoom.dzheight,
+                    type: 'slider',
+                    show:bl.YMdataZoom .dzshow,
+                    fillerColor:bl.YMdataZoom.dzfillerColor,
+                    start: 0,
+                    end: bl.YMdataZoom.dzend,
+                    handleSize: 0,
+                    backgroundColor:bl.YMdataZoom.dzbackgroundColor//背景色
+                }
+            ],
+            //统计图位置
+            grid: {
+                left: bl.YMgrid.gleft,
+                right: bl.YMgrid.gright,
+                bottom: bl.YMgrid.gbottom,
+                top: bl.YMgrid.gtop,
+                containLabel: true
+            },
+            xAxis:[{
+                show:true,
+                type: 'category',
+                data: [], //bl.dataxName
+                axisLine: {
+                    show: bl.YMxaxis.xaxisLine,
+                    lineStyle: {
+                        color: bl.xaxisClocr[0],
+                        width: 1,
+                        type: "solid"
+                    }
+                },
+                axisTick: {
+                    show: bl.YMxaxis.xaxisTick,
+                    lineStyle: {
+                        color: bl.xaxisClocr[1]
+                    }
+                },
+                axisLabel: {
+                    show: bl.YMxaxis.xaxisLabel,
+                    margin: bl.YMxaxis.xmargin,
+                    rotate: bl.YMxaxis.xrotate,
+                    textStyle: {
+                        color: bl.xaxisClocr[2]
+                    }
+                },
+                splitLine: {
+                    show: bl.YMxaxis.xsplitLine,
+                    textStyle: {
+                        color: bl.xaxisClocr[3]
+                    }
+                },
+                splitArea: {
+                    show: bl.YMxaxis.xsplitArea,
+                    areaStyle: {
+                        color: [bl.xaxisClocr[4],bl.xaxisClocr[5]]
+                    }
+                }
+            }],
+            yAxis: [
+                {
+                min: 0,
+                minInterval: bl.YMyaxis.yminInterval,
+                    type:bl.YMyaxis.yvalue,
+                name:bl.YMyaxis.yname,
+                axisLabel: {
+                    margin: bl.YMyaxis.ymargin,
+                    rotate: bl.YMyaxis.yrotate,
+                    textStyle: {
+                        color: bl.yaxisClocr[0]
+                    }
+                },
+                axisTick: {
+                    show: bl.YMyaxis.yaxisTick,
+                    lineStyle: {
+                        color: bl.yaxisClocr[1]
+                    }
+                },
+                axisLine: {
+                    show: bl.YMyaxis.yaxisLine,
+                    lineStyle: {
+                        color: bl.yaxisClocr[2]
+                    }
+                },
+                splitLine: {
+                    show: bl.YMyaxis.ysplitLine,
+                    lineStyle: {
+                        color: bl.yaxisClocr[3]
+                    }
+                },
+                splitArea: {
+                        show: bl.YMyaxis.ysplitArea,
+                        areaStyle: {
+                            color:[ bl.yaxisClocr[4], bl.yaxisClocr[5]]
+                        }
+                    }  
+            },
+            // 第二根坐标轴
+            {
+                show:bl.YMsyaxis.syshow,
+                name:bl.YMsyaxis.syname,
+                min: 0,
+                minInterval: bl. YMsyaxis.syminInterval,
+                type: bl.YMsyaxis.syvalue,
+                position:'right',
+                axisLabel: {
+                    margin: bl.YMsyaxis.symargin,
+                    rotate: bl.YMsyaxis.syrotate,
+                    textStyle: {
+                        color: bl.yaxisClocr[0]
+                    }
+                },
+                axisTick: {
+                    show: bl.YMsyaxis.syaxisTick,
+                    lineStyle: {
+                        color: bl.yaxisClocr[1]
+                    }
+                },
+                axisLine: {
+                    show: bl.YMsyaxis.syaxisLine,
+                    lineStyle: {
+                        color: bl.yaxisClocr[2]
+                    },
+                },
+                splitLine: {
+                    show: bl.YMsyaxis.sysplitLine,
+                    lineStyle: {
+                        color: bl.yaxisClocr[3]
+                    },
+                },
+                splitArea: {
+                        show: bl.YMsyaxis.sysplitArea,
+                        areaStyle: {
+                            color: [bl.yaxisClocr[4], bl.yaxisClocr[5]]
+                        }
+                    }              
+            }
+                // 第三根坐标轴
+            //      {
+            //        show:bl.YMtyaxis.tyshow,
+            //        minInterval: bl.YMsyaxis.syminInterval,
+            //        type: bl.YMtyaxis.tyminInterval,
+            //        position:'right',
+            //        name:bl.YMtyaxis.tyname,
+            //        offset: 80,
+            //        axisLabel: {
+            //            margin: bl.YMtyaxis.tymargin,
+            //            rotate: bl.YMtyaxis.tyrotate,
+            //            textStyle: {
+            //                color: bl.yaxisClocr[0]
+            //            }
+    
+            //        },
+            //        axisTick: {
+            //            show: bl.YMtyaxis.tyaxisTick,
+            //            lineStyle: {
+            //                color: bl.yaxisClocr[1]
+            //            }
+            //        },
+            //        axisLine: {
+            //            show: bl.YMtyaxis.tyaxisLine,
+            //            lineStyle: {
+            //                color: bl.yaxisClocr[2]
+            //            },
+            //        },
+            //        splitLine: {
+            //            show: bl.YMtyaxis.tysplitLine,
+            //            lineStyle: {
+            //                color: bl.yaxisClocr[3]
+            //            },
+            //        },
+            //        splitArea: {
+            //             show: bl.YMtyaxis.tysplitArea,
+            //             areaStyle: {
+            //                 color: [bl.yaxisClocr[4],bl.yaxisClocr[5]]
+            //             }
+            //         } 
+            //    }
+            ],
+            // 具体数值
+            series:[] //seriesList
+            };
+        this.blChart .setOption(option);
+        this.blChart .showLoading();
+        $(window).resize(function(){
+            _this.blChart .resize();
+        }).resize();
         return this;
     },
     barlineSet:function(dName,valJson){
         var bl=this.barlineCfg;
          //处理数据，展示题目
+         valJson && ( bl.datalName.length=0);
          for(var key in valJson){
             bl.datalName.push(key);
         }
         //处理数据成echart格式
         var seriesList=[];
         //处理barWidth
-        var viewWh=$('body').width()*(1-parseInt( bl.YMgrid.gleft)/100- parseInt(bl.YMgrid.gright)/100 ),
+        var viewWh=$('#'+bl.id).width()*(1-parseInt( bl.YMgrid.gleft)/100- parseInt(bl.YMgrid.gright)/100 )/* -160 */,//160为默认间距
             oneWh=viewWh/ dName.length,
-            oneBarWh=(oneWh-40)/bl.datalName.length; 
-            var bwh=Math.ceil(bl.minBarWidth*1.3)*bl.datalName.length,
+            // oneBarWh=(oneWh-40)/bl.datalName.length; 
+            oneBarWh=(oneWh/bl.datalName.length-0.9)/2.9; 
+            // var bwh=Math.ceil(bl.minBarWidth*1.3)*bl.datalName.length,
+            var bwh=Math.ceil(bl.minBarWidth*1.3*bl.datalName.length+bl.minBarWidth*0.3),
                 bbnumber=parseInt(viewWh/bwh),
-                dataZoom_end;
+                dataZoom_end,
+                bwh_max=Math.ceil(bl.maxBarWidth*1.3*bl.datalName.length+bl.minBarWidth*0.3);
             if (dName.length > bbnumber) {
                 dataZoom_end = 100 - ((dName.length -bbnumber+1) / dName.length) * 100;
             } else {
-                dataZoom_end = 100;
+                dataZoom_end = 90;
             }
+            var flag;
         for(var i=0;i< bl.datalName.length;i++){
             var oneItem={
                 name: bl.datalName[i],
                 type:bl.type,
                 data:valJson[bl.datalName[i]]
             };
+            if(bl.type=="line"){
+                oneItem.symbol='circle';//拐点样式
+                oneItem.symbolSize= 6;//拐点大小
+                oneItem.smooth=true;  //设置平滑
+            }
             if(oneBarWh<bl.minBarWidth){
                 oneItem.barWidth=bl.minBarWidth;
+                flag=true;
             }else if(oneBarWh>bl.maxBarWidth){
                 oneItem.barWidth=bl.maxBarWidth;
-            };
+            }else{
+                oneItem.barWidth=Math.ceil(oneBarWh);
+            }
             seriesList.push(oneItem);
         }
         var op={
@@ -2357,7 +2529,7 @@ app.ui.echarts={
             }],
             dataZoom:[{
                 show:bl.YMdataZoom .dzshow,
-                end:bl.YMdataZoom.dzend
+                end:100
             }],
             series:seriesList
         };
@@ -2365,12 +2537,16 @@ app.ui.echarts={
             op.dataZoom[0].show=true;
             op.dataZoom[0].end=dataZoom_end;
         }
+        // if(bwh>oneWh){
+        //     op.dataZoom[0].show=true;
+        //     op.dataZoom[0].end=dataZoom_end;
+        // }
         this.blChart.setOption(op);
         this.blChart.hideLoading();
     },
     pieCfg:{
-       id:'yui-report-echart', 
-       valueJson:[],
+        id:'yui-report-echart', 
+        valueJson:[],
         //统计图颜色
         YMPcolorList :['#ffc000', '#00ad4e', '#0073c2', '#165868', '#e76f00', '#316194', '#723761', '#00b2f1', '#4d6022', '#4b83bf', '#f9c813', '#0176c0'],
         //统计图背景色
@@ -2378,12 +2554,12 @@ app.ui.echarts={
         // 各统计注解
         YMPlegend :{
             lshow: true,//是否显示
-            //lalign: $('#yui-report-echart').width() - 100,//注解位置 center：居中  left：左 right：右
+            lalign: 'center',//注解位置 center：居中  left：左 right：右
             lcolor: '#444', //字体颜色
             lorient: 'vertical',//注解显示格式 horizontal,水平分布 vertical，垂直分布
             licon: 'circle',//注解前面图形 circle：园，triangle：三角形，diamond：菱形，rect：矩形,roundRect:圆角矩形
-            // ldata: ['视频广告', '百度', '谷歌', '必应', '其他'],
-            lyalign: 'center',//垂直位置
+            ldata:[],
+            lyalign: 'center'//垂直位置
         },
         //题目
         YMPtitle : {
@@ -2405,19 +2581,19 @@ app.ui.echarts={
             totaltextsize: 14, //题目大小
             totalnumber: '', //总数值
             totalnumbersize: 26, //数值大小
-            totalColor: ["#999", '#333'], //居中值颜色设置 前为标题 后为数值
+            totalColor: ["#999", '#333'] //居中值颜色设置 前为标题 后为数值
         },
         //鼠标提示
         YMPtooltip :{
             YMPTtooltip: "",//加在头部
             YMPBtooltip: "",//加在尾部
-            YMPcontent: '{b}:{c}({d}%)',
+            YMPcontent: '{b}:{c}({d}%)'
         },
         //控制图形
         YMPseries : {
             sname: '',
             sradius: ["0%", "70%"], //控制图形类型 取值0~100%（控制0~80%） 当前值为0%时 为饼状图 其他为环形图（推荐取值在前后差20）页可为具体数值
-            slabelshow: true, //是否需要外部显示
+            slabelshow: false, //是否需要外部显示
             sastyle: ['', '16'], //百分比数值的颜色与字号行高 颜色传空时 字体颜色对应每部分颜色
             sbstyle: ['', '14'], //数值标题的颜色与字号行高 颜色传空时 字体颜色对应每部分颜色
             scstyle: ['', '18'], //具体数值标题的颜色与字号行高 颜色传空时 字体颜色对应每部分颜色
@@ -2444,9 +2620,9 @@ app.ui.echarts={
                 type: 'scroll',
                 orient: pie.YMPlegend.lorient,
                 icon: pie.YMPlegend.licon,
-                data: [],
+                data: pie.YMPlegend.ldata,
                 align: 'left',
-                //x: pie.YMPlegend.lalign,
+                x: pie.YMPlegend.lalign,
                 y: pie.YMPlegend.lyalign,
                 textStyle: {
                     color: pie.YMPlegend.lcolor,
@@ -2463,12 +2639,12 @@ app.ui.echarts={
                     text: pie.YMPtitle.ttext,
                     textStyle: {
                         fontSize: pie.YMPtitle.ttfontsize,
-                        color: pie.YMPtitle.ttcolor,
+                        color: pie.YMPtitle.ttcolor
                     },
                     subtext: pie.YMPtitle.tsubtext,
                     subtextStyle: {
                         fontSize: pie.YMPtitle.tstfontsize,
-                        color: pie.YMPtitle.tstcolor,
+                        color: pie.YMPtitle.tstcolor
                     }
                 },
                 // 需要中间出现值
@@ -2551,7 +2727,7 @@ app.ui.echarts={
                         padding: [0, 12],
                         textStyle: {
                             color: pie.YMPseries.scstyle[0],
-                            fontSize: pie.YMPseries.scstyle[1],
+                            fontSize: pie.YMPseries.scstyle[1]
                         },
                         rich: {
                             a: {
@@ -2582,7 +2758,7 @@ app.ui.echarts={
         var pie=this.pieCfg,
             dataNumberkey=[];
         for(var key in vJson){
-            dataNumberkey.push(key);
+            dataNumberkey.push(vJson[key].name);
         } 
         this.pieChart.setOption({
             legend:{
@@ -2633,7 +2809,7 @@ app.ui.echarts={
         });
         this.pieChart.hideLoading();
     }
-}
+};
 app.ui.reportSearch={
     _cfg:{
         yearNum:2,          //显示的年的个数
@@ -2668,7 +2844,7 @@ app.ui.reportSearch={
         refreshFn:function(arg){}  //请求函数
     },
     init:function(cfg){
-        if(cfg){ $.extend(true,this._cfg,cfg);}
+        if(cfg){ $.extend(/* true, */this._cfg,cfg);}
         var c=this._cfg,
             _box=$('<div class="yy-m-report-search"></div>'),
             _quickQuery=$('<ul class="yy-m-report-quickQuery yy-lf"></ul>'),  //快捷查询
@@ -2726,9 +2902,9 @@ app.ui.reportSearch={
             this.month=$('.yy-m-report-monthQuery>li');
             this.monthHandler();
         }
-        if(!cfg.quickQuery){ //快捷查询
-            this.quickHandler();
-        }else{}
+        // if(!cfg.quickQuery){ //快捷查询
+        this.quickHandler();
+        // }else{}
         this.customHandler();     //自定义查询
         this.conditionHandler();  //条件查询
         this.formInit();
@@ -2736,6 +2912,8 @@ app.ui.reportSearch={
     },
     formInit:function(){
         this.searchItem=$('#yui-report-search-list');
+        this.selectRender=[];
+        this.selectRenderCfg=[];
         var _this=this,
             elm=this._cfg.item,
             _dom=this.searchItem,
@@ -2751,9 +2929,29 @@ app.ui.reportSearch={
            }else{
                 var _div=$("<div/>",{class:'yy-m-search-item'}),
                     _label=$('<label>'+e.label+'</label>'),
-                    _select=$("<select/>",{id:'qry_'+e.name+'_in',class:'layui-select'});
+                    _select=$("<select/>",{id:'qry_'+e.name+'_in',class:'layui-select',name:e.name});
                     _div.append(_label);
-                if(e.option){
+                if(e.render){
+                    this.selectRender.push(e.name);
+                    this.selectRenderCfg.push( e.cfg || {});
+                }
+                if(e.cfg){
+                   (function(e){//保存e
+                        ycya.http.ajax(e.cfg.url,{
+                            type:e.cfg.type || 'post',
+                            data:e.cfg.where,
+                            success:function(data){
+                                var d=e.cfg.beforeSuccess?e.cfg.beforeSuccess(data):data.data,
+                                    keyName=e.cfg.keyName ?e.cfg.keyName :'name',
+                                    valName=e.cfg.valName ?e.cfg.valName :'id';
+                                for(var key in d){
+                                    _select.append( $('<option value='+d[key][valName]+'>'+d[key][keyName]+'</option>') );
+                                }
+                            }
+                        });
+                   })(e);
+                }    
+                if(e.option && !e.cfg){
                     for(var key in e.option){
                         _select.append( $('<option value='+key+'>'+e.option[key]+'</option>') );
                     }
@@ -2767,7 +2965,7 @@ app.ui.reportSearch={
         $('.yy-m-search',_dom).append( $('<button/>',{class:'layui-btn layui-btn-sm layui-btn-normal',text:'确定',click:function(){
             //时间判断
             var flag=false;
-            if(_this.timeArr){
+            if(_this.timeArr && $('#'+_this.timeArr[0]).parent().parent().css('display')!='none'){
                 if( $.trim( $('#'+_this.timeArr[0]).val() )=='' ||  $.trim( $('#'+_this.timeArr[1]).val() )=='' ){
                     flag=true;
                     layer.msg('请选择时间段',{time:2000});
@@ -2896,10 +3094,29 @@ app.ui.reportSearch={
                     $(this).parent().hide(); 
                 }
             });
-            if(_this.searchItem.css('display')!="block"){
+            //搜索条件显示/隐藏
+            if( $(this).hasClass('active')){
                 _this.searchItem.show();
             }else{
                 _this.searchItem.hide();
+            }
+            //年月显示/隐藏
+            var flag;// 0月 1年 2自定义
+            $.each(_this.custom,function(){
+                if( $(this).hasClass('active')){
+                    flag=3;
+                    return false;
+                }
+            });
+            if(flag==3){
+                $('.yy-m-report-yearQuery').fadeIn(100);
+                $('.yy-m-report-monthQuery').fadeIn(100);
+            }else{
+                if(_this.clickFlag=='year'){
+                    $('.yy-m-report-yearQuery').fadeIn(100);
+                }else{
+                    $('.yy-m-report-monthQuery').fadeIn(100);
+                }
             }
         });
     },
@@ -2918,7 +3135,8 @@ app.ui.reportSearch={
                     $(this).parent().show(); 
                 }
             });
-            if(_this.searchItem.css('display')!="block"){
+             //搜索条件显示/隐藏
+             if( $(this).hasClass('active')){
                 _this.searchItem.show();
             }else{
                 _this.searchItem.hide();
@@ -2949,7 +3167,7 @@ app.ui.reportSearch={
             var pra=$.extend(defauleOpt,extraPra);
         callback && $.type(callback)==='function' && callback(pra);
     },
-    treePopup:function(cfg){
+    treePopup:function(cfg,para){
         var _this=this;
         if(!cfg ||!cfg.url ){
            return layer.msg('para error');
@@ -2964,9 +3182,28 @@ app.ui.reportSearch={
                 var iframeWin = $(layero).find('iframe')[0].contentWindow;
                 var backJson=iframeWin.getSelected();
                 if(backJson.arr.length>0){
-                    cfg.elm.val(backJson.arr[0][backJson.name]).attr('keyid',backJson.arr[0].id)
+                    cfg.elm.val(backJson.arr[0][cfg.name || 'name']).attr('keyid',backJson.arr[0].id);
+                    _this.deptId=backJson.arr[0].id;
+                    if(para){
+                        $.each(para,function(i,item){
+                            var ind=$.inArray(item.name,_this.selectRender);
+                            if(ind!=-1){
+                                var _data={
+                                    name:item.name,
+                                    data:{}
+                                };
+                                $.extend(_data.data,item.data)
+                                _data.data[item.aliasName || cfg.elm.attr('name')]=backJson.arr[0].id;
+                                _this.selectRenderFn(_data);
+                            }
+                        })
+                    }
                 }
                 layer.close(index);
+
+            },
+            end:function(){
+                cfg.end && cfg.end();
             }
         });
     },
@@ -2985,21 +3222,77 @@ app.ui.reportSearch={
 				(diffDate.getHours()+ diffDate['H']), (diffDate.getMinutes()+ cfg['m']), (vDate.getSeconds()+ diffDate['s']),
 				(diffDate.getMilliseconds()+ diffDate['S'])
 			);
+    },
+    getStatus:function(){ // 0月 1年 2自定义
+        var _v,flag;
+        $.each(this.custom,function(){
+            if( $(this).hasClass('active') ){
+                flag=true;
+                return false;
+            }
+        });
+        if(flag){ return 3;}
+        if(this.clickFlag=="month"){
+            _v='0';
+        }else if(this.clickFlag=="year"){
+            _v='1';
+        }
+        return _v;
+    },
+    selectRenderFn:function(para){//name:'下拉框name名称',data:{} 额外的数据
+        if(!para || !para.name){
+            throw new Error('参数错误');
+            return ;
+        }
+        var ind=$.inArray(para.name,this.selectRender),
+            selectCfg;
+        if( ind!==-1 ){//name字段验证
+            selectCfg=this.selectRenderCfg[ind];
+            var _data=$.extend(selectCfg.where,para.data);
+            ycya.http.ajax(selectCfg.url,{
+                type:selectCfg.type || 'post',
+                data:_data,
+                success:function(data){
+                    var html='',
+                        d=selectCfg.beforeSuccess?selectCfg.beforeSuccess(data):data.data,
+                        keyName=selectCfg.keyName ?selectCfg.keyName :'name',
+                        valName=selectCfg.valName ?selectCfg.valName :'id';
+                        if(d.length==0){
+                            html+='<option value="-2">无</option>';
+                        }else{
+                            for(var key in d){
+                                html+='<option value='+d[key][valName]+'>'+d[key][keyName]+'</option>' ;
+                            }
+                        }
+                    
+                    $('[name='+para.name+']','.yy-m-search').html(html);
+                }
+            });
+        }
     }
-}
+};
 app.ui.report={
     init:function(cfg){
         if(cfg.title){this.title=app.ui.reportTitle.init(cfg.title)}
         if(cfg.search){this.search=app.ui.reportSearch.init(cfg.search)}
         if(cfg.echart){
-            if(cfg.echart.type){
+            if(!cfg.echart.type){cfg.echart.type='bar'}
+            if(cfg.echart.type!=='pie'){
                  this.echart=app.ui.echarts.barlineInit(cfg.echart);
             }else{
+                delete cfg.echart.type
                 this.echart=app.ui.echarts.pieInit(cfg.echart);
             }
            
         }
         if(cfg.grid)this.grid = app.ui.grid.init($.extend(cfg.grid,{elem:'#yui-grid'}));
+        if(cfg.gridHandle){
+            var boxid=cfg.gridHandle.id || 'yui-grid-popup',
+            w=cfg.gridHandle.width || 400;
+            $('body').append( $('<div/>',{id:boxid,class:'yy-hide',/* height:cfg.gridHandle.height || 300, */width: w || 400,html:'<table style="width:'+w+'px;" id="yui-grid-popup-table"><table>'}));
+            $.extend(cfg.gridHandle,{elem:'#yui-grid-popup-table',parent:$('#'+boxid) });
+            this.popupGridCfg=cfg.gridHandle;
+        }
         return this;
     },
     getSearch:function(){
@@ -3014,7 +3307,7 @@ app.ui.report={
     getGrid:function(){
         return this.grid;
     }
-}
+};
 //monitor
 app.ui.data={//此函数用于根据后台多变的数据结构，返回最终list
     get:function(da,format){//da 后台返回的一级数据 format 除一级结构以外至最终list的数据结构,例如 data.data.data
@@ -3030,7 +3323,7 @@ app.ui.data={//此函数用于根据后台多变的数据结构，返回最终li
         return d;
     }
 
-}
+};
 app.ui.monitorPopup={
     open:function(cfg){
         var ind=layer.open({
@@ -3048,7 +3341,7 @@ app.ui.monitorPopup={
         });
         return ind;
     }
-}
+};
 app.ui.status={
     _cfg:{
         title:'平台运行情况',
@@ -3082,11 +3375,20 @@ app.ui.status={
             $('#mapWrap').append($('<div/>',{class:'run-status-box-toggle cursor-point',text:'运行情况>>',click:function(){
                 $('#'+boxId).toggle(400);
                 if($(this).css('left')=='23px'){
-                    $(this).animate({'left':330},400);
+                    var _left=_c.toggle=="parking"? 444:330;
+                    $(this).animate({'left':_left},400);
                 }else{
                     $(this).animate({'left':23},400);
                 }
             }}));
+        }
+        if(_c.itemClick){
+            this.list.on('click','li',function(){
+                _c.itemClick({
+                    status:$(this).attr('data-status'),
+                    title:$(this).attr('data-title')
+                })
+            });
         }
         if(_c.checkClick){
             this.statusList=app.ui.statusList.init(_c.checkClick);
@@ -3094,7 +3396,7 @@ app.ui.status={
                 layer.open({
                     type: 1, 
                     area: '530px',
-                    title:(cfg.header &&  cfg.header.title)|| '运行情况',
+                    title:(cfg.checkClick.header &&  cfg.checkClick.header.title)|| '运行情况',
                     content: _this.statusList.boxElm,
                     anim:app.ui.anim,
                     end:function(){
@@ -3111,12 +3413,12 @@ app.ui.status={
         }
         this.list.find('.status-num').each(function(i,item){
             var v= valJson[ $(this).attr('data-status')];
-            if( v ){
+            if( v !==undefined){
                 $(this).text(v)
             }
         });
     }
-}
+};
 app.ui.tool={
     /**
      * @param {*} cfg
@@ -3152,7 +3454,9 @@ app.ui.tool={
                 var _content=$('<ul/>',{class:'master-list tool-list'});
                 $.each(item.item,function(i,elm){
                     var cl=['iconfont','m-right-4',elm.class].join(' '),
-                    _cli=$('<li/>',{click:elm.handle,id:elm.id,html:'<i class="'+cl+'"></i>'+elm.name});
+                    _cli=$('<li/>',{click:function(){
+                        elm.handle && elm.handle(_this);
+                    },id:elm.id,html:'<i class="'+cl+'"></i>'+elm.name});
                     _content.append(_cli);
                 });
                 _li.append(_content).append('<div class="up-triangle master-list-triangle tool-list-triangle ycya-hide" ></div>');
@@ -3162,6 +3466,15 @@ app.ui.tool={
             _this.ids.push(item.id);
         });
         $('#mapWrap').length>0?$('#mapWrap').append(_box):layer.msg('box  id is not exist');
+        //插入退出全屏
+        this.exit='#yyExit';
+        $('#mapWrap').length>0?$('#mapWrap').append( $('<div/>',{id:'yyExit',class:'yy-hide yy-exit',text:'退出全屏',click:function(){
+            if(app.ui.screen.isFull()){//已全屏,则执行退出全屏操作
+                app.ui.screen.exitFullScreen();
+                $(this).hide();
+            }
+           
+        }}) ):layer.msg('box  id is not exist');
         this.elms=[];
         $.each(this.ids,function(i,item){
             _this.elms.push( $('#'+item))
@@ -3225,10 +3538,15 @@ app.ui.tool={
                         $(this).hide();
                     });
                 });
+                $('.'+item.cfg["primary-icon"],'#mapSearch').click(function(){
+                    var c=item.cfg.base;
+                    c.keyName && ( c.data[c.keyName]=$('input','#mapSearch').val() );
+                    c.search && c.search(item.cfg.base);
+                })
             }else{}
         });
     }
-}
+};
 app.ui.deptTree={
     _cfg:{
         //view: {dblClickExpand: false,showLine: true,selectedMulti: false},
@@ -3272,7 +3590,7 @@ app.ui.deptTree={
         }
         return this;
     }
-}
+};
 app.ui.searchBar={
     init:function(cfg){
         var boxId='mapSearch',
@@ -3286,8 +3604,8 @@ app.ui.searchBar={
         this.boxElm=$('#'+boxId);
         return this;
     }
-}
-app.ui.mapHighSearch={}
+};
+app.ui.mapHighSearch={};
 app.ui.master={
     init:function(cfg){
         var _this=this;
@@ -3354,7 +3672,7 @@ app.ui.master={
 
         });
     }
-}
+};
 app.ui.mapShow={
     init:function(cfg){
         var _this=this;
@@ -3491,7 +3809,7 @@ app.ui.mapShow={
             }
         });
     }
-}
+};
 app.ui.zoom={
     _cfg:{
         id:'ycyaZoom'
@@ -3509,7 +3827,7 @@ app.ui.zoom={
             $('#mapWrap').length>0 ?$('#mapWrap').append(zwrap) : layer.msg('box id is not exist');
         return this;
     }
-}
+};
 app.ui.map={
     _cfg:{
         id:'ycyaMap' 
@@ -3518,7 +3836,7 @@ app.ui.map={
         $.extend(this._cfg,cfg);
         return new YcyaMap(this._cfg.id);
     }
-}
+};
 app.ui.statusList={
     init:function(cfg){
         var  _this=this,
@@ -3546,7 +3864,7 @@ app.ui.statusList={
                 class:'off-bg'
             }),
             _srightul=$('<ul/>',{class:'well-box-list'});
-            _leftnum.append('<span><i class="iconfont '+cfg.left.allIcon+'"></i>'+cfg.left.allNum || 0+'</span>').append('<span class="rt"><i class="iconfont '+cfg.left.typeIcon+'"></i>'+cfg.left.typeNum || 0+'</span>');
+            _leftnum.append('<span><i class="iconfont '+cfg.left.allIcon+'"></i><font>'+cfg.left.allNum || 0+'</font></span>').append('<span class="rt"><i class="iconfont '+cfg.left.typeIcon+'"></i><font>'+cfg.left.typeNum || 0+'</font></span>');
             _slefttop.append(_lefttitle).append(_leftnum).append(_sleftprogress1).append(_sleftprogress2);
             _sleft.append(_slefttop).append(_sleftbottom);
             _sright.append(_srightul);
@@ -3588,8 +3906,24 @@ app.ui.statusList={
             alarm=cfg.alarmKey,
             repair=cfg.repairKey,
             aliasName=cfg.nameKey;
+            this.listCfg={
+                on:on,
+                off:off,
+                alarm:alarm,
+                repair:repair,
+                aliasName:aliasName
+            };
+            this.listIcon=cfg.icon;
         $.each(itemList,function(i,cur){
-            listArr.push( $('<li/>',{html:'<span>'+cur[aliasName]+'：</span><span><i class="iconfont icon-blue  '+cfg.icon+'"></i>'+cur[on]+'</span><span><i class="iconfont icon-red  '+cfg.icon+'"></i>'+cur[alarm]+'</span><span><i class="iconfont icon-red  '+cfg.icon+'"></i>'+cur[repair]+'</span><span><i class="iconfont icon-red  '+cfg.gray+'"></i>'+cur[off]+'</span>'})[0].outerHTML);
+            listArr.push( $('<li/>',{html:'<span>'+cur[aliasName]+'：</span><span><i class="iconfont icon-blue  '+cfg.icon+'"></i>'+cur[on]+'</span><span><i class="iconfont icon-red  '+cfg.icon+'"></i>'+cur[alarm]+'</span><span><i class="iconfont icon-yellow  '+cfg.icon+'"></i>'+cur[repair]+'</span><span><i class="iconfont icon-gray  '+cfg.icon+'"></i>'+cur[off]+'</span>'})[0].outerHTML);
+        });
+        this.ul.html(listArr.join(''));
+    },
+    listRender:function(itemList){
+        var _this=this,
+            listArr=[];
+        $.each(itemList,function(i,cur){
+            listArr.push( $('<li/>',{html:'<span>'+cur[_this.listCfg.aliasName]+'：</span><span><i class="iconfont icon-blue  '+_this.listIcon+'"></i>'+cur[_this.listCfg.on]+'</span><span><i class="iconfont icon-red  '+_this.listIcon+'"></i>'+cur[_this.listCfg.alarm]+'</span><span><i class="iconfont icon-yellow  '+_this.listIcon+'"></i>'+cur[_this.listCfg.repair]+'</span><span><i class="iconfont icon-gray  '+_this.listIcon+'"></i>'+cur[_this.listCfg.off]+'</span>'})[0].outerHTML);
         });
         this.ul.html(listArr.join(''));
     },
@@ -3601,12 +3935,16 @@ app.ui.statusList={
             if( k=='offBar' ){
                 elm.css({width:jsonData['offNum']/jsonData.allNum*100+'%'});
             }
-            if(jsonData[k]){
-                 elm.text(jsonData[k]);
+            if(jsonData[k] !==undefined){
+                if(k=='allNum' || k=='typeNum'){
+                    elm.find('font').text(jsonData[k])
+                }else{
+                     elm.text(jsonData[k]);
+                }
             }
         });
     }
-}
+};
 app.ui.page.monitor={
     init:function(cfg){
         var _this=this;
@@ -3616,13 +3954,252 @@ app.ui.page.monitor={
         this.map.ready(function(){//地图加载完进行的操作
             _this.zoom=app.ui.zoom.init(_this.map,cfg.zoom);
             _this.master=app.ui.master.init(cfg.master);
-            cfg.ready && cfg.ready();
+            cfg.ready && cfg.ready(_this);
         });
         return this;
     },
     getMap:function(){return this.map},
     getStatus:function(){return this.status}
+};
+//screen
+app.ui.screen={
+    fullScreen:function(el){
+        var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen,
+        wscript;
+        if(typeof rfs != "undefined" && rfs) {
+            rfs.call(el);
+            return;
+        }
+        if(typeof window.ActiveXObject != "undefined") {
+            wscript = new ActiveXObject("WScript.Shell");
+            if(wscript) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+    },
+    exitFullScreen:function(){
+        var el= document,
+    	cfs = el.cancelFullScreen || el.webkitCancelFullScreen || el.mozCancelFullScreen || el.exitFullScreen,
+        wscript;
+        if (typeof cfs != "undefined" && cfs) {
+            cfs.call(el);
+            return;
+        }
+        if (typeof window.ActiveXObject != "undefined") {
+            wscript = new ActiveXObject("WScript.Shell");
+            if (wscript != null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+    },
+    fullele: function () {
+        return(
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.msFullscreenElement ||
+            document.mozFullScreenElement ||
+        null);
+    },
+    isFull: function () {
+        return !!(document.webkitIsFullScreen || this.fullele());
+    }
+};
+//parking
+app.ui.title={
+    _cfg:{
+        item:[],
+        parent:'#bodyHeader'
+        /* text 标题,bgClass:背景class,num 数量,unit 单位,icon 图标class */
+    },
+    init:function(cfg){
+        $.extend(true,this._cfg,cfg);
+        var c=this._cfg,_this=this;
+        if($.type(c.item)!=='array'){return new TypeError()}
+        var html='',
+            width=1/c.item.length*100+'%';
+        $.each(c.item,function(i,val){
+           var _class= val.bgClass ?'yy-title-bg-gradient-'+val.bgClass:'yy-title-bg-gradient-blue',
+                num=$.type(val.num - 0)=='number' && _this.fmoney(val.num - 0),
+                noPadding= (i==  c.item.length-1) && 'padding-right:0' ;  
+           html+='<div style="width:'+width+';'+noPadding+'" class="yy-height-all" ><div class="yy-height-all '+_class+'"><p class="yy-titles-item-text">'+val.text+'</p><p><strong class="yy-titles-num yy-titles-bigfont" id="yyTitlesNum'+i+'">'+num+'</strong>/<span class="yy-titles-item-unit">'+val.unit+'</span><i class="yy-rt iconfont yy-titles-bigfont '+val.icon+'"></i></p></div></div> '; 
+        });
+        $(this._cfg.parent).html(html);
+        this.numList=$('.yy-titles-num',this._cfg.parent);
+        return this;
+    },
+    set:function(para){
+        //数组 顺序与item顺序一致
+        //对象 可指定设置
+        var _this=this;
+        if( $.type(para)=='array' || $.type(para)=='object'){
+            $.each(para,function(i,val){
+                $(_this.numList[i]).text($.type(val - 0)=='number' && _this.fmoney(val - 0));
+            });
+        }else{
+            return new TypeError();
+        }
+    },
+    fmoney:function (s, n) {
+        n = n >=0 && n <= 20 ? n : 2;
+        s = parseFloat((s + "").replace(/[^\d\.-]/g, "")).toFixed(n) + "";
+        var l = s.split(".")[0].split("").reverse(), r = s.split(".")[1];
+        t = "";
+        for (i = 0; i < l.length; i++) {
+        t += l[i] + ((i + 1) % 3 == 0 && (i + 1) != l.length ? "," : "");
+        }
+        return t.split("").reverse().join("");
+    }
+};
+app.ui.devRun={
+    _cfg:{
+        // parent:'#bodyDevRun'
+    },
+    init:function(cfg){
+        if(!cfg.name || !cfg.cfg){
+            return layer.msg('parking devRun para error');
+        }
+        $.extend(true,this._cfg,cfg);
+        var _parent=cfg.parent ? $(cfg.parent) :  $('#bodyDevRun'),
+            c=this._cfg,
+            _this=this;
+        $('.layui-card-header',_parent).text(c.title || '');
+        var thead=$('<thead/>'),
+            tbody=$('<tbody/>'),
+            theadtr=$('<tr/>'),
+            fields=[],
+            cla=[];    
+        $.each(c.name,function(i,item){
+            theadtr.append( $('<th>'+item.title+'</th>'));
+            fields.push(item.field);
+            cla.push(item.class);
+        });
+        this.fields=fields;
+        thead.append(theadtr);
+        $('.thead',_parent).html(thead[0].outerHTML);
+        ycya.http.ajax(cfg.cfg.url,{
+            data:cfg.cfg.data,
+            type:cfg.cfg.type || 'post',
+            success:function(data){
+                var d=cfg.cfg.beforeSuccess ?cfg.cfg.beforeSuccess(data):(data.data || []);
+                $.each(d,function(i,item){
+                    var _tr=$('<tr/>');
+                    for(var j=0;j<_this.fields.length;j++){
+                        var cur=_this.fields[j];   
+                         _tr.append( $('<td/>',{text:item[cur],class:'yy-color-'+cla[j]}) );
+                    }
+                    tbody.append(_tr);
+                });
+                $('.tbody',_parent).html(tbody[0].outerHTML);
+            }
+        });
+    }
+};
+app.ui.parkRank={
+    _cfg:{
+        // parent:'#bodyParkRank'
+    },
+    init:function(cfg){
+        if(!cfg.name || !cfg.cfg){
+            return layer.msg('parking parkRank para error');
+        }
+        $.extend(true,this._cfg,cfg);
+        this.numberKey=cfg.numberKey;
+        var _parent= cfg.parent ? $(cfg.parent) :  $('#bodyParkRank'),
+            c=this._cfg,
+            _this=this;
+        $('.layui-card-header',_parent).prepend( $('<span/>',{text:c.title||''}) );
+        var thead=$('<thead/>'),
+            theadtr=$('<tr/>'),
+            fields=[];   
+        $.each(c.name,function(i,item){
+            theadtr.append( $('<th>'+item.title+'</th>'));
+            fields.push(item.field);
+        });
+        this.fields=fields;
+        thead.append(theadtr);
+        $('.thead',_parent).html('<colgroup><col width="150"><col></colgroup>'+thead[0].outerHTML);
+        _this.render(c.cfg[0],_parent);
+        //yy-parking-rank-ul bind event
+        $('.yy-parking-rank-ul').on('click','li',function(){
+            $(this).addClass('active').siblings().removeClass('active');
+            _this.render(c.cfg[ $(this).index() ],_parent)
+        });
+    },
+    render:function(cfg,par){
+        var _this=this,
+        tbody=$('<tbody/>');
+        ycya.http.ajax(cfg.url,{
+            data:cfg.data,
+            type:cfg.type || 'post',
+            success:function(data){
+                var d=cfg.beforeSuccess ?cfg.beforeSuccess(data):(data.data || []);
+                $.each(d,function(i,item){
+                    if(i<7){
+                        var cla=i<3?'yy-parking-tr'+(1+i):'',
+                            _tr=$('<tr/>',{class:cla});
+                        for(var j=0;j<_this.fields.length;j++){
+                            var cur=_this.fields[j];
+                            if(cur==_this.numberKey){
+                                    var _no;
+                                    if(i<3){
+                                    _no='<i class="yy-parking-no-position yy-no yy-no'+i+'"></i>';
+                                    }else{
+                                    _no='<i class= "yy-no" style="margin-right:6px">'+(1+i)+'</i>';
+                                    }
+                                _tr.append( $('<td/>',{html:_no+item[cur]}))
+                            }else{
+                                _tr.append( $('<td/>',{text:item[cur]}) )
+                            }
+                        }
+                        tbody.append(_tr);
+                    }
+                });
+                $('.tbody',par).html('').html('<colgroup><col width="150"><col></colgroup>'+tbody[0].outerHTML);
+            }
+        });
+    }
 }
+app.ui.page.parking={
+    init:function(cfg){
+        var _this=this;
+        if(cfg.header){
+            this.header=app.ui.title.init(cfg.header);
+        }
+        if(cfg.map){
+            this.map=app.ui.map.init(cfg.map);
+            this.map.ready(function(){//地图加载完进行的操作
+               cfg.ready && cfg.ready(_this);
+            });
+        }
+        if(cfg.devRun){
+            this.devRun=app.ui.devRun.init(cfg.devRun);
+        }
+        if(cfg.parkRank){
+            this.parkRank=app.ui.parkRank.init(cfg.parkRank);
+        }
+        if(cfg.parkSort && cfg.parkSort.type=="pie"){
+            var pieId='parksort';
+            $('.layui-card-body','#bodyParkSort').append($('<div/>',{height:200,id:pieId}));
+            $('.layui-card-header','#bodyParkSort').append($('<span/>',{text:cfg.parkSort.title|| ''}))
+            $.extend(cfg.parkSort,{id:pieId});
+            this.parkSort=app.ui.echarts.pieInit(cfg.parkSort);
+        }
+        if(cfg.parkCurve && (cfg.parkCurve.type=="bar" ||  cfg.parkCurve.type=="line")){
+            var curseId='parkcurse';
+            $('.layui-card-body','#bodyParkCurve').append($('<div/>',{height:300,id:curseId}));
+            $('.layui-card-header','#bodyParkCurve').append($('<span/>',{text:cfg.parkCurve.title|| ''}))
+            $.extend(cfg.parkCurve,{id:curseId});
+            this.parkCurve=app.ui.echarts.barlineInit(cfg.parkCurve);
+        }
+        return this;
+    },
+    getHeader:function(){return this.header},
+    getMap:function(){return this.map},
+    getDevRun:function(){return this.devRun},
+    getParkRank:function(){return this.parkRank},
+    getParkSort:function(){return this.parkSort},
+    getParkCurve:function(){return this.parkCurve}
+};
 $(function(){
     var page = GetQueryString('p');
     if(page){

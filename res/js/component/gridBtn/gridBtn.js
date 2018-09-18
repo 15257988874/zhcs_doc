@@ -8,8 +8,9 @@
  * }]
  */
 !function(win){
-    var ycyaTableBtn = function (btnArray) {
-        var layPage = $('.layui-laypage'),
+    var ycyaTableBtn = function (res,btnArray,parentDom) {
+        if(res.data && res.data.length==0){return ;}
+        var layPage = parentDom?parentDom.find('.layui-laypage'):$('.layui-laypage'),
             layPageBox = $('#layui-table-page1'),
             _box = $('<div style="margin-top:-2px;" class="layui-btn-group grid-btn" id="pageBtn"></div>'),//按钮默认有右边距，若要取消，layui-custom.less中取消
             _more ;

@@ -74,7 +74,9 @@ $(function(){
             ]
         },
         grid:{
-            url: app.url + 'sys/logList' //数据接口
+            // url: app.url + 'sys/logList' //数据接口
+            url: 'backJson.js' //数据接口
+            ,method:'get'
             ,cols: [[ //表头
                 {type:'numbers',align:'center',fixed: 'left'}
                 ,{field: 'userName', title: '用户名', width:100, align:'center',fixed: 'left',event:'evtUser'}
