@@ -1,0 +1,245 @@
+/* 此文件--用于高级查询组件和自动生成弹窗组件 */
+.layui-layer-title {
+  background-color: #fff !important;
+}
+.layui-layer-btn {
+  padding: 0 25px 12px 16px !important;
+}
+.layui-layer-btn .layui-layer-btn0 {
+  background-color: #0085FF !important;
+}
+.layui-form select {
+  display: inline-block !important;
+}
+.layui-layer-content .layui-form-item {
+  margin-bottom: 0;
+}
+.layui-table thead tr {
+  background-color: #fff;
+}
+.relative {
+  position: relative;
+}
+.m-none {
+  display: none;
+}
+.m-block {
+  display: block;
+}
+.w-all {
+  width: 100%;
+}
+.w-half {
+  width: 49% !important;
+}
+.m-lf {
+  float: left;
+}
+.m-inline-block {
+  display: inline-block;
+}
+.m-rt {
+  float: right;
+}
+.max-height {
+  max-height: 500px;
+}
+.require-option {
+  color: #f00;
+  margin-right: 5px;
+}
+.block-item-class {
+  width: 100%;
+  padding-right: 20px;
+}
+.two-item > li {
+  width: 50%;
+}
+.two-item > li.block-item {
+  width: 100%;
+  padding-right: 20px;
+}
+.one-item > li {
+  width: 100%;
+}
+.one-item > li.block-item {
+  width: 100%;
+  padding-right: 20px;
+}
+.three-item > li {
+  width: 33.3%;
+}
+.three-item > li.block-item {
+  width: 100%;
+  padding-right: 20px;
+}
+.m-advanced-popup label,
+.m-popup label {
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: inline-block;
+  width: 90px;
+  margin-left: -90px;
+  padding-right: 6px;
+  text-align: right;
+}
+.m-advanced-popup input,
+.m-popup input,
+.m-advanced-popup textarea,
+.m-popup textarea,
+.m-advanced-popup select,
+.m-popup select {
+  width: 100%;
+  border: 1px solid #eee;
+}
+.m-advanced-popup textarea,
+.m-popup textarea {
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  resize: none;
+  text-indent: 5px;
+  vertical-align: middle;
+  min-height: 40px;
+}
+.m-advanced-popup input,
+.m-popup input {
+  padding: 5px 0;
+  text-indent: 5px;
+}
+.m-advanced-popup select,
+.m-popup select {
+  padding: 5px 0;
+}
+.m-advanced-popup > li,
+.m-popup > li {
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: inline-block;
+  line-height: 22px;
+  list-style: none;
+  padding-left: 90px;
+  padding-right: 20px;
+}
+.m-advanced-popup > li:not(:first-child),
+.m-popup > li:not(:first-child) {
+  margin-top: 5px;
+}
+.m-advanced-popup .line,
+.m-popup .line {
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 18px;
+  right: 12px;
+}
+.m-advanced-popup .form-btn-li,
+.m-popup .form-btn-li {
+  display: none;
+  position: absolute;
+  bottom: 3px;
+  right: 0;
+  text-align: right;
+}
+.m-popup {
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 8px 10px 8px 0px;
+  background-color: #fff;
+  color: #696969;
+  font-size: 12px;
+  max-height: 400px;
+}
+.m-advanced-popup {
+  position: absolute;
+  width: 500px;
+  right: 0;
+  top: 42px;
+  line-height: 38px;
+  padding-top: 16px;
+  border: 1px solid #e2e2e2;
+  box-shadow: 5px 6px 5px #d2d2d2;
+}
+.m-advanced-popup .layui-form-item {
+  margin-bottom: 0;
+}
+.m-advanced-popup .btn-group {
+  margin-top: 10px;
+  text-align: right;
+  padding-right: 18px;
+}
+.btn-li a {
+  display: inline-block;
+  vertical-align: top;
+  height: 28px;
+  line-height: 28px;
+  padding: 0 15px;
+  border: 1px solid #dedede;
+  background-color: #fff;
+  color: #fff;
+  border-radius: 2px;
+  font-weight: 400;
+  cursor: pointer;
+  text-decoration: none;
+  border-color: #1E9FFF;
+  background-color: #1E9FFF;
+}
+.btn-li a:hover {
+  opacity: .9;
+  text-decoration: none;
+}
+.margin0 {
+  margin: 0 !important;
+}
+.table-wrap {
+  width: calc(100% - 62px) !important;
+  margin: 0 auto;
+}
+.table-wrap th {
+  border-bottom: 0 !important;
+}
+.table-wrap input,
+.table-wrap select {
+  width: 90%;
+  border: 0;
+  background-color: transparent;
+}
+.table-title {
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+  padding: 9px 15px;
+  min-height: 20px;
+  line-height: 20px;
+  font-size: 14px;
+  background-color: #f2f2f2;
+}
+/* .table-body{
+    max-height: 200px;
+    overflow: auto;
+} */
+.table-add,
+.table-del {
+  cursor: pointer;
+}
+.table-add {
+  color: #01AAED;
+}
+.table-del {
+  color: #FF5722;
+}

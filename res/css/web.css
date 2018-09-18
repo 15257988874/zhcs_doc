@@ -1,0 +1,20 @@
+.ycya-content{
+    padding:20px 0 10px 20px;
+}
+.ycya-content table a{
+    color: #01AAED;
+}
+.site-dir{
+    padding: 10px;
+    background: #ffff;
+}
+.site-dir li {
+    line-height: 26px;
+    margin-left: 16px;
+    overflow: visible;
+    list-style-type: disc;
+    cursor: pointer;
+}
+// .layui-layer-page .layui-layer-content{
+//     padding:10px;
+// }

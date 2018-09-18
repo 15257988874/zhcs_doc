@@ -1,0 +1,11 @@
+.pre(@style,@value){
+    -webkit-@{style}:@value;
+    -ms-@{style}: @value;
+    -o-@{style}:@value;
+    -moz-@{style}:@value;
+        @{style}:@value;
+}
+.filter(@val){
+    opacity: @val/100;
+    filter:alpha(opacity=@val);
+}

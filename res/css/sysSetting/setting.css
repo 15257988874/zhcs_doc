@@ -1,0 +1,60 @@
+strong {
+  font-weight: normal;
+}
+.ycya-none {
+  display: none;
+}
+.margin-right-10 {
+  margin-right: 10px;
+}
+.padding-right-40 {
+  padding-right: 36px !important;
+}
+.padding-left0 {
+  padding-left: 0 !important;
+}
+.padding-right0 {
+  padding-right: 0 !important;
+}
+.width-all {
+  width: 100%;
+}
+.height-all {
+  height: 100%;
+}
+.box-sizing {
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.gray {
+  color: #8c8c8c;
+  margin-right: 10px;
+}
+.small-font {
+  font-size: 12px;
+}
+.patch {
+  padding-top: 53px;
+  margin-top: -43px;
+}
+.tree-style {
+  height: 100%;
+  overflow: auto;
+}
+.dept-info {
+  font-size: 12px;
+  line-height: 36px;
+}
+.role-tree {
+  max-height: 500px;
+  overflow: auto;
+}
+.layui-fluid {
+  padding-bottom: 0;
+}
+.tool-btn {
+  padding: 0 20px !important;
+}

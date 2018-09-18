@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>API</title>
+    <link rel="stylesheet" href="../../res/dep/layui/css/layui.css">
+    <link rel="stylesheet" href="../../res/css/web.css">
+</head>
+<body>
+   <div class="ycya-content">
+        <blockquote class="layui-elem-quote">
+            表格中常用API介绍 <br>
+            注: <font color="#f00">假设以下API init结果都赋值给变量 result</font>
+        </blockquote>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="tree">1.app.ui.tree.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于初始化树，配置参照zTree配置,默认配置为
+            {
+                data:{
+                    simpleData: {enable: true,idKey: "id",pIdKey: "pId",rootPId: 0},
+                    key:{name:'name'}
+                },callback:{}
+            } <br>
+            
+            注: <font >获取树对象  result.getTree() (ztree对象,可使用ztree的API)</font>
+            <!-- <a href="../default/tpl/list2col.html?p=test" target="mainIfm">示例</a> -->
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="search">2.app.ui.search.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于初始搜索条件,默认搜索key为 qry_元素name_元素qt
+            <br>
+            注: 1.<font >result.getValueQry() <br>
+                    结果示例:{"qry_userType_eq":"-1"}
+                </font><br>
+                2.<font >result.getValue() <br>
+                    结果示例:{"gpsTime":{"qry_gpsTime_eq":""},"optTime":{"qry_optTime_gt":"","qry_optTime_lt":""},"userType":{"qry_userType_eq":"-1"},"userName":{"qry_userName_like":"1"}}
+                </font>
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="grid">3.app.ui.grid.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于生成表格,配置参照layui 数据表格配置,默认配置为
+            {
+                id:'ycyaGrid',   
+                page:true,
+                height:'full-104',
+                request: {
+                    pageName: 'pageNo', //页码的参数名称，默认：page
+                    limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                },
+                text: {none: '暂无相关数据'},
+                limit: 20, //每页显示的条数
+                limits: [10, 20, 50],
+                method: 'post',
+                where:{}
+            }
+            <br>
+            注: 1.<font >result.qry(para),根据条件刷新表格 <br>
+                    参数示例:para={name:'11'}
+                </font><br>
+                2.<font >app.ui.grid.rowBtn(cfg),生成操作按钮(常用于表格右侧操作按钮) <br>
+                    参数示例:app.ui.grid.rowBtn({title:'删除',css:['layui-btn-danger'],event:'del'})
+                </font><br>
+                3.<font >result.getRows(boolean),获取勾选行的数据/获取勾选行的数据ID集合(字符串，中间逗号相隔) <br>
+                    参数示例:true返回数据id集合,反之获取勾选行的ID集合
+                </font><br>
+                4.<font >result.delRows(callback),用于快速删除行 <br>
+                    参数示例:直接传入ajax请求回调即可(已过滤未选中数据情况,弹窗自动弹出)
+                </font>
+        </div>
+        <pre class="layui-code" lay-title="表格示例">
+grid:{
+    url: app.url + 'sys/logList' //数据接口
+    ,cols: [[ //表头
+        {type:'checkbox',fixed: 'left'}
+        ,{type:'numbers',align:'center',fixed: 'left'}
+        ,{field: 'userName', title: '用户名', width:100, align:'center',fixed: 'left',event:'evtUser'}
+        ,{fixed: 'right', width: 400, align: 'center',templet:function(d){
+            return app.ui.grid.rowBtn({title:'修改',event:'modOne'})
+        }}
+    ]],
+    btns:[//底部按钮
+        {title:'添加',handle:addEvt,name:'yui-table-add'},
+        {title:'查看',handle:function(){console.log(1)},css:['layui-btn-danger'],name:'yui-table-add2'}
+    ]
+}
+        </pre>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="left">4.app.ui.left.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于初始化双列模板(即树/列表+表格)的左侧信息
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>title</td>
+                    <td>String</td>
+                    <th>'部门信息'</th>
+                    <td>左侧标题</td>
+                </tr>
+                <tr>
+                    <td>items</td>
+                    <td>Array</td>
+                    <th>无</th>
+                    <td>搜索条件 <font color="#f00">参照search</font></td>
+                </tr>
+                <tr>
+                    <td>btns</td>
+                    <td>Array</td>
+                    <th>"{title:'<i class="layui-icon">&#xe615;</i>查找',handle:deptQryEvt,css:['layui-btn-primary'],name:'yuiLeftQry'}"</th>
+                    <td>左侧按钮组</td>
+                </tr>
+                <tr>
+                    <td>body</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>左侧主体信息<font color="#f00">支持树(tree)/列表(list),列表支持本地和服务器加载</font> 示例如下:</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="layui-text">left树示例</div>
+        <pre class="layui-code" lay-title="left树示例">
+{
+    title:'部门信息',
+    items:[
+        //{label:'部门',dt:'text',qt:'like',name:"deptId",len:50}
+    ],
+    btns:[
+        {title:'<i class="layui-icon">&#xe615;</i>查找',handle:deptQryEvt,css:['layui-btn-primary'],name:'yuiLeftQry'}
+        //,{title:'<i class="layui-icon">&#xe615;</i>新增',handle:deptQryEvt1,css:['layui-btn-primary'],name:'yuiLeftAdd'}
+    ],
+    body:{view:'tree',cfg:{
+        evtCode:'leftTreeLoad',//事件代码，应用自定义，在一个页面必须唯一
+        url:'', //后台接口地址
+        where:{},//额外参数
+        data:[
+            {id:1, pId:0, name: "父节点1"},
+            {id:11, pId:1, name: "子节点1"},
+            {id:12, pId:1, name: "子节点2"}
+        ],
+        cfg:{
+            callback:{'onClick':treeClick}
+            ,data:{key:{name:'name'}}
+            ,check:{enable: true}
+        }
+    }}
+}
+        </pre>
+        <div class="layui-text">left列表示例</div>
+        <pre class="layui-code" lay-title="left列表示例">
+{
+title:'部门信息',
+items:[
+    //{label:'部门',dt:'text',qt:'like',name:"deptId",len:50}
+],
+btns:[
+    {title:'<i class="layui-icon">&#xe615;</i>查找',handle:deptQryEvt,css:['layui-btn-primary'],name:'yuiLeftQry'}
+],
+body:{
+    view:'list',cfg:{
+    evtCode:'leftTreeLoad',//事件代码，应用自定义，在一个页面必须唯一
+    // url:'list.js',    //服务器获取地址
+    data:{},   //额外数据
+    type:'get',
+    option:[
+        {
+            "id": 1
+            ,"dicName": "数据1"
+            ,"dicType": "11"
+            ,"dicTest":"111"
+        },
+        {
+            "id":2
+            ,"dicName": "数据2"
+            ,"dicType": "22"
+            ,"dicTest":"222"
+        },
+        {
+            "id":3
+            ,"dicName": "数据3"
+            ,"dicType": "33"
+            ,"dicTest":"333"
+        }
+    
+    ], //本地加载时使用
+    isCheck:true,
+    qry:'dicType', //查询字段
+    handle:function(arg){ //点击事件
+        console.log(arg);
+        //console.log( page.getGrid().qry( {'dicType':arg}) );
+    },
+    name:'dicName', 
+    dataAttr:['id','dicType','dicTest']  
+    }
+    }
+}
+        </pre>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="list">5.app.ui.page.list.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于快速生成单表格，树/列表+表格页面
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>title</td>
+                    <td>String</td>
+                    <th>'信息'</th>
+                    <td>页面标题</td>
+                </tr>
+                <tr>
+                    <td>left</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>页面左侧信息 <a href="#left">参照app.ui.left.init()的参数</a></td>
+                </tr>
+                <tr>
+                    <td>search</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>页面搜索条件信息<a href="#search">参照app.ui.left.init()的参数</a></td>
+                </tr>
+                <tr>
+                    <td>grid</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>表格信息<a href="#grid">参照app.ui.grid.init()的参数</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="bindRail">6.app.ui.bindRail.open(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法起先是专门用于绑定围栏(一对一绑定),后也可用于上下2层布局(上搜索条件，下表格)弹窗
+            注: <font color="#f00">表格按钮事件可自定义，修改弹窗js即可</font>
+        </div>
+        <pre class="layui-code" lay-title="bindRail示例">
+app.ui.bindRail.open({
+    url:getContentPath()+'/page/default/tpl/listpop.html?p=bindRail', //对应页面地址
+    data:{id:data.id},  //表格需要额外传的参数
+    selected:{id:data.id}//选中行的数据ID
+});
+        </pre>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="bindFalt">7.app.ui.bindFalt.open(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法专门用于一对多绑定,且有显示选中部分(例如设备)
+        </div>
+        <pre class="layui-code" lay-title="bindRail示例">
+app.ui.bindFalt.open({
+    url:getContentPath()+'/page/default/tpl/listpop.html?p=bindFalt',
+    data:{id:data.id},
+    selected:{id:data.id},
+    yes:function(ind,s){//ind 当前layer的index  s选中的列表
+        console.log(data.id);
+        console.log(s);
+        // layer.close(ind);
+    }
+});
+        </pre>
+
+   </div>
+   <ul class="layui-fixbar"><li class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;display:none" id="scrollTop"></li></ul>
+   <script src="../../res/js/lib/jquery-1.8.0.min.js" type="text/javascript" ></script>
+   <script src="../../res/dep/layui/layui.all.js" type="text/javascript"></script>
+   <script src="../../res/js/web.js"></script>
+   <script>
+        var html= `<ul class="site-dir">
+                     <li> <a href="#tree">app.ui.tree.init(cfg)</a> </li>
+                     <li> <a href="#search">app.ui.search.init(cfg)</a></li>
+                     <li> <a href="#grid">app.ui.grid.init(cfg)</a></li>
+                     <li> <a href="#left">app.ui.left.init(cfg)</a></li>
+                     <li> <a href="#list">app.ui.page.list.init(cfg)</a></li>
+                     <li> <a href="#bindRail">app.ui.bindRail.init(cfg)</a></li>
+                     <li> <a href="#bindFalt">app.ui.bindFalt.init(cfg)</a></li>
+                 <ul></ul>`;
+           openDir({
+                html:html,
+                width:220,
+                height:300
+           });
+   </script>
+</body>
+</html>

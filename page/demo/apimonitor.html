@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>API</title>
+    <link rel="stylesheet" href="../../res/dep/layui/css/layui.css">
+    <link rel="stylesheet" href="../../res/css/web.css">
+</head>
+<body>
+   <div class="ycya-content">
+        <blockquote class="layui-elem-quote">
+            监控模板中常用API介绍 <br>
+            注: <font color="#f00">以下多个API生成元素依赖于 元素mapWrap,监控模板中请勿修改</font>
+        </blockquote>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="map">1.app.ui.map.init()</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于初始化地图,若除监控模板要用到此方法,得传入参数如下{id:'容器ID'} ,监控模板无需传参,示例:app.ui.map.init()<br>
+            注: <font color="#f00">返回ycyaMap对象</font>
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="zoom">2.app.ui.zoom.init()</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于监控模板生成右下角地图缩放层别按钮,需要一个参数(地图对象),示例:app.ui.zoom.init(map)
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="status">3.app.ui.status.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于监控模板生成左下角状态列表,参数如下<br>
+            <font color="#f00">
+                备注:常用赋值
+            </font>
+            <pre class="layui-code" lay-title="status 方法">
+var status=app.ui.status.init(cfg);
+status.set({'0':100})//设置右下角状态值,key 与status item里的status字段值对应
+status.statusList.set({offNum:300,alarmNum:101,allNum:1000})//设置运行情况弹窗中的值,key 与status checkClick里的left对象里的字段对应
+            </pre>
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>title</td>
+                    <td>String</td>
+                    <th>'平台井盖运行情况'</th>
+                    <td>头部标题</td>
+                </tr>
+                <tr>
+                    <td>item</td>
+                    <td>Array</td>
+                    <th>无</th>
+                    <td><a href="#statusItem">详见item字段</a></td>
+                </tr>
+                <tr>
+                    <td>itemClick</td>
+                    <td>Function</td>
+                    <th>function(data){
+                        console.log(data) //data {status:'点击状态值',title:'点击title'}
+                    }</th>
+                    <td>状态点击事件,返回一个实参 {status:'点击状态值',title:'点击title'}</td>
+                </tr>
+                <tr>
+                    <td>check</td>
+                    <td>String</td>
+                    <th>'查看各类井盖运行情况>>'</th>
+                    <td>底部标题</td>
+                </tr>
+                <tr>
+                    <td>checkClick</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td><a href="#statusCheckClick">详见checkClick字段</a></td>
+                </tr>
+                <tr>
+                    <td>toggle</td>
+                    <td>Boolean</td>
+                    <th>true</th>
+                    <td>是否有切换功能</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="statusItem">status item</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>title</td>
+                    <td>String</td>
+                    <th>'设备列表'</th>
+                    <td>点击事件的弹窗的标题</td>
+                </tr>
+                <tr>
+                    <td>text</td>
+                    <td>String</td>
+                    <th>'总数'</th>
+                    <td>列表标题</td>
+                </tr>
+                <tr>
+                    <td>status</td>
+                    <td>String</td>
+                    <th>无</th>
+                    <td>列表状态后台对应值</td>
+                </tr>
+                <tr>
+                    <td>num</td>
+                    <td>Number</td>
+                    <th>100</th>
+                    <td>列表数量</td>
+                </tr>
+                <tr>
+                    <td>class</td>
+                    <td>String</td>
+                    <th>blue</th>
+                    <td>列表颜色class ,支持 blue red yellow gray,css中可自定义</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="statusCheckClick">status checkClick</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="500">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>header</td>
+                    <td>Object</td>
+                    <th>{
+                            title:'井盖设施运行情况'
+                    }</th>
+                    <td>弹出框中title,默认'运行情况'</td>
+                </tr>
+                <tr>
+                    <td>left</td>
+                    <td>Object</td>
+                    <th>
+                        <pre class="layui-code">
+{
+    title:'平台井盖',//左侧标题
+    allIcon:'icon-pingjiaxingxing', //左侧平台所有数量前的icon class
+    allNum:1000, //左侧平台所有数量
+    typeIcon:'icon-fuwuleixing',//左侧平台所有类型前的icon class
+    typeNum:10,//左侧平台所有类型
+    repairNum:200,//左侧平台维修数量
+    offNum:400,//左侧平台离线数量
+    alarmNum:100//左侧平台报警数量
+}                            
+                        </pre>
+                    </th>
+                    <td>弹窗左侧信息</td>
+                </tr>
+                <tr>
+                    <td>right</td>
+                    <td>Object</td>
+                    <th>
+                        <pre class="layui-code">
+{
+    icon:'icon-jinggai', //右侧数量的icon class
+    onKey:'1',      //全部数量的key的值( <a href="#statusItem">与status item值对应</a> )
+    offKey:'2',     //离线数量的key的值
+    alarmKey:'3',   //报警数量的key的值
+    repairKey:'4',  //维修数量的key的值
+    nameKey:'typeName', //自定义的待显示的类型字段名称(例如显示的井盖名称对应的后台字段)
+    item:[ //本地加载数据使用的字段
+        {
+            id:'0',
+            type:0,
+            typeName:'上水井盖',
+            '1':252030,
+            '2':252030,
+            '3':252030,
+            '4':252030
+        },
+        {
+            id:'0',
+            type:0,
+            typeName:'上水井盖',
+            '1':252030,
+            '2':252030,
+            '3':252030,
+            '4':252030
+        }
+    ]
+    ,cfg:{
+        format:'data.data.data', //过滤数据(不包括第一级)
+        url:'monitorList.js',    //请求接口
+        type:'get',              //请求方式
+        where:{}                 //请求的额外数据
+    }
+}
+}                          
+                        </pre>    
+                    </th>
+                    <td>弹窗右侧信息</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="tool">4.app.ui.tool.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于监控模板生成右上角工具条,参数如下
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>id</td>
+                    <td>String</td>
+                    <th>'toolDept'</th>
+                    <td>元素容器ID,<font color="#f00">必传</font></td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>String</td>
+                    <th>'报警'</th>
+                    <td>元素显示名称,<font color="#f00">必传</font></td>
+                </tr>
+                <tr>
+                    <td>up</td>
+                    <td>String</td>
+                    <th>'icon-zhankai1'</th>
+                    <td>后面显示的icon class(例如展开符号)</td>
+                </tr>
+                <tr>
+                    <td>class</td>
+                    <td>String</td>
+                    <th>'icon-louyutubiaobaojing'</th>
+                    <td>前面显示的icon class</td>
+                </tr>
+                <tr>
+                    <td>cfg</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td> 自定义事件的配置参数,<a href="#toolCfg">详见tool cfg配置</a></td>
+                </tr>
+                <tr>
+                    <td>item</td>
+                    <td>Array</td>
+                    <th>无</th>
+                    <td> 元素下的子列表,<a href="#toolItem">详见tool item配置</a></td>
+                </tr>
+                <tr>
+                    <td>event</td>
+                    <td>string</td>
+                    <th>无</th>
+                    <td>自定义事件 ,目前只包括'deptTree' , 'search'</td>
+                </tr>
+                <tr>
+                    <td>cursor</td>
+                    <td>Boolean</td>
+                    <th>true</th>
+                    <td>鼠标手势(建议当前元素有事件时设为true)</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="toolCfg">tool cfg配置</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>open</td>
+                    <td>Boolean</td>
+                    <td>true</td>
+                    <td>树专用属性,用于展开所有节点</td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>String</td>
+                    <td>'get'</td>
+                    <td>ajax请求方式,默认post</td>
+                </tr>
+                <tr>
+                    <td>url</td>
+                    <td>String</td>
+                    <td>无</td>
+                    <td>请求地址</td>
+                </tr>
+                <tr>
+                    <td>beforeSuccess</td>
+                    <td>Function</td>
+                    <td>function(data){
+                            return data.data;
+                    }</td>
+                    <td>用于获取最终list,处理数据</td>
+                </tr>
+                <tr>
+                    <td>yes</td>
+                    <td>Function</td>
+                    <td>function(index,dept,selectedArr){
+                            console.log(index,dept,selectedArr);
+                            if(selectedArr.length>0){
+                                dept.text(selectedArr[0].name);
+                                
+                            }layer.close(index)
+                    }</td>
+                    <td>该函数有三个实参,layer index,部门元素,选中的节点数组</td>
+                </tr>
+                <tr>
+                    <td>cfg</td>
+                    <td>Object</td>
+                    <td>无</td>
+                    <td>树的配置(参照zTree配置)</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="toolItem">tool item配置</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>class</td>
+                    <td>String</td>
+                    <td>'icon-sousuo_sousuo  icon-green'</td>
+                    <td>元素icon class+图标颜色class(icon-green/blue/yellow/blueess等)</td>
+                </tr>
+                <tr>
+                    <td>id</td>
+                    <td>String</td>
+                    <td>'measure'</td>
+                    <td>元素id,用于绑定事件</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>String</td>
+                    <td>测距</td>
+                    <td>元素显示名称</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="master">5.app.ui.master.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            此方法用于监控模板生成右上角控制中心,参数如下
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>class</td>
+                    <td>String</td>
+                    <th>'icon-zonganniu'</th>
+                    <td>枢纽中心的icon class,<font color="#f00">必传</font></td>
+                </tr>
+                <tr>
+                    <td>item</td>
+                    <td>Array</td>
+                    <th>无</th>
+                    <td>枢纽中心列表,<font color="#f00">必传</font>,<a href="#masterItem">详见master item配置</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="masterItem">master item</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>class</td>
+                    <td>String</td>
+                    <td>'icon-sousuo_sousuo  icon-green'</td>
+                    <td>元素icon class+图标颜色class(icon-green/blue/yellow/blueess等)</td>
+                </tr>
+                <tr>
+                    <td>id</td>
+                    <td>String</td>
+                    <td>'measure'</td>
+                    <td>元素id,用于绑定事件</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>String</td>
+                    <td>测距</td>
+                    <td>元素显示名称</td>
+                </tr>
+                <tr>
+                    <td>event</td>
+                    <td>String</td>
+                    <th>'mapShow'</th>
+                    <td>自定义事件名称,<font color="#f00">暂只支持mapShow</font></td>
+                </tr>
+                <tr>
+                    <td>cfg</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>自定义事件配置,<font color="#f00">配合event参数时必传</font>,<a href="#masterItemCfg">详见master item cfg配置</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="masterItemCfg">master item cfg</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="500">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>names</td>
+                    <td>Object</td>
+                    <td>
+                        <pre class="layui-code" lay-title="">
+{
+    id:'id',  // id别名
+    name:'name',//name别名
+    type:'type' //type别名
+}
+                        </pre>
+                    </td>
+                    <td>各类名称</td>
+                </tr>
+                <tr>
+                    <td>local</td>
+                    <td>Object</td>
+                    <td>
+                        <pre class="layui-code" lay-title="">
+{
+    selected:[//初始化选中
+        {'id':'1','name':'污水井盖','type':1},
+        {'id':'2','name':'上水井预留盖','type':2},
+        {'id':'3','name':'下水井盖','type':3}
+    ],
+    all:[//所有
+        {'id':'1','name':'污水井盖','type':1},
+        {'id':'2','name':'上水井预留盖','type':2},
+        {'id':'3','name':'下水井盖','type':3},
+        {'id':'4','name':'电力井盖','type':4},
+        {'id':'5','name':'输气井盖','type':5},
+        {'id':'6','name':'化粪池井盖','type':6},
+        {'id':'7','name':'公安井盖','type':7},
+        {'id':'8','name':'中水井盖','type':8}
+    ]
+}
+                        </pre>
+                    </td>
+                    <td>本地加载数据使用</td>
+                </tr>
+                <tr>
+                    <td>cfg</td>
+                    <td>Object</td>
+                    <td>
+                        <pre class="layui-code" lay-title="">
+{
+    url:'typeJson.js', //请求地址
+    format:'data.data.data',//数据格式(不包括第一级)
+    where:{},//额外数据
+    type:'get'//请求方式
+}
+                        </pre> 
+                    </td>
+                    <td>请求配置</td>
+                </tr>
+                <tr>
+                    <td>yes</td>
+                    <td>Function</td>
+                    <th>function(ind,showList){ //发送请求的函数
+                            console.log(showList);
+                            layer.close(ind)
+                    }</th>
+                    <td>确定点击回调函数,该函数返回2个实参,当前弹窗的index以及选中数据的集合</td>
+                </tr>
+            </tbody>
+        </table>
+   </div>
+   <ul class="layui-fixbar"><li class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;display:none" id="scrollTop"></li></ul>
+   <script src="../../res/js/lib/jquery-1.8.0.min.js" type="text/javascript" ></script>
+   <script src="../../res/dep/layui/layui.all.js" type="text/javascript"></script>
+   <script src="../../res/js/web.js"></script>
+   <script>
+        var html= `<ul class="site-dir">
+                     <li> <a href="#map">app.ui.map.init()</a> </li>
+                     <li> <a href="#zoom">app.ui.zoom.init(cfg)</a> </li>
+                     <li> 
+                        <a href="#status">app.ui.status.init(cfg)</a>
+                        <ul>
+                            <li><a href="#statusItem">status item配置</a></li>    
+                            <li><a href="#statusCheckClick">status checkClick配置</a></li>    
+                        </ul>
+                     </li>
+                     <li> 
+                        <a href="#tool">app.ui.tool.init(cfg)</a>
+                        <ul>
+                            <li><a href="#toolCfg">tool cfg配置</a></li>    
+                            <li><a href="#toolItem">tool item配置</a></li>    
+                        </ul> 
+                    </li>
+                    <li> 
+                        <a href="#master">app.ui.master.init(cfg)</a>
+                        <ul>
+                            <li><a href="#masterItem">master item配置</a></li>    
+                            <li><a href="#masterItemCfg">master item cfg配置</a></li>    
+                        </ul>
+                    </li>
+                 <ul></ul>`;
+           openDir({
+                html:html,
+                width:220,
+                height:300
+           });
+   </script>
+</body>
+</html>

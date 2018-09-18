@@ -1,0 +1,149 @@
+.margin-bottom20 {
+  margin-bottom: 20px;
+}
+.layadmin-user-login {
+  padding: 0;
+  min-height: 0;
+}
+.layui-input:hover {
+  border-color: #5578cf !important;
+}
+.layui-form-item .layui-form-checkbox[lay-skin=primary] {
+  margin-top: 0;
+}
+.layui-form-checkbox[lay-skin=primary] span {
+  color: #fff;
+  padding: 0 4px;
+}
+.layui-form-checkbox[lay-skin=primary] i {
+  top: 2px;
+  width: 12px;
+  height: 12px;
+  line-height: 12px;
+}
+.layui-form-checkbox[lay-skin=primary]:hover i {
+  border-color: #d2d2d2;
+}
+.layui-form-checked[lay-skin=primary] i {
+  border-color: #0086FF;
+  background-color: #0086FF;
+}
+.layui-icon-username:before {
+  position: relative;
+  top: 5px;
+  content: url('../../../res/img/userman.png');
+}
+.layui-icon-password:before {
+  position: relative;
+  top: 5px;
+  content: url('../../../res/img/password.png');
+}
+.layui-input:focus,
+.layui-textarea:focus {
+  border-color: #5578cf!important;
+}
+.content-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.content-wrap > img {
+  width: 100%;
+  height: 100%;
+}
+@media (min-width: 1920px) {
+  .content {
+    top: 18%;
+  }
+}
+@media screen and (min-width: 1366px) and (max-width: 1900px) {
+  .content {
+    top: 10%;
+  }
+}
+@media screen and (min-width: 992px) and (max-width: 1366px) {
+  .content {
+    top: 8%;
+  }
+}
+.content {
+  position: absolute;
+  z-index: 50;
+  left: 50%;
+  margin-left: -308px;
+  width: 616px;
+  height: 411px;
+}
+.content > .title {
+  width: 466px;
+  height: 30px;
+  margin: 0 auto;
+  background: url('../../../res/img/logo.png');
+  margin-bottom: 24px;
+}
+.content > section {
+  width: 100%;
+  height: 357px;
+  background: url('../../../res/img/bg_login.png');
+}
+.content .code {
+  position: absolute;
+  bottom: 54px;
+  left: 44px;
+  width: 124px;
+  color: #fff;
+  cursor: pointer;
+}
+.content .code > p {
+  box-sizing: border-box;
+  height: 32px;
+  padding: 4px 12px;
+}
+.content .code .download-code {
+  float: right;
+}
+.content .code .download-code:before {
+  position: relative;
+  top: 2px;
+  content: url('../../../res/img/erwei.png');
+}
+.content label {
+  width: 44px;
+  height: 46px;
+  line-height: 46px;
+  background: #fff;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.content input[type="text"],
+.content [type="password"] {
+  height: 48px;
+  line-height: 48px;
+  background-color: #145bb0;
+  border-color: #5578cf;
+  border-radius: 4px;
+  color: #fff;
+}
+.content .layui-icon-close {
+  display: none;
+  position: absolute;
+  top: 16px;
+  right: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+.login-box,
+.code-wrap {
+  position: absolute;
+  right: 48px;
+  top: 38px;
+  width: 300px;
+}
+.login-box .layui-btn,
+.code-wrap .layui-btn {
+  background-color: #0086FF;
+}
+.code-wrap {
+  height: 250px;
+  z-index: -1;
+}

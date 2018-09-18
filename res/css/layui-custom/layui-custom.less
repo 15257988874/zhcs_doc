@@ -1,0 +1,114 @@
+//layui style custom and table btn custom
+@grid-btn-margin:0;
+@input-border-color:#e6e6e6;
+@list-line-height:36px;
+//
+.layui-fluid{
+    padding: 15px;
+}
+//page
+.layui-laypage{
+    float:right;
+}
+.layui-btn-sm{
+    padding:0 20px;
+    &.more-font{
+        padding:0 10px;
+    }
+}
+.layui-btn-small{
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+//grid btn style
+.layui-btn-group{
+    .more-btn{
+        &>button:first-child{
+             border-left: 1px solid rgba(255,255,255,.5);
+             &~button{
+                 border-top: 1px solid rgba(255,255,255,.5);
+             }
+        } 
+        button{
+            display: none;
+        }
+        .btn-more{
+            display: inline-block;
+        }   
+     }
+}
+//grid btn margin
+.layui-table-page{
+    .grid-btn{
+        &>button{
+            margin-right: @grid-btn-margin !important;
+        }
+    }
+}
+//table basic search
+.basic-search{
+    &>.layui-form-item{
+        display: inline-block;
+        margin-bottom: 0;
+    }
+    .layui-form-label{
+        padding: 6px 2px 6px 8px;
+    }
+    .layui-input-block{
+        margin-left:92px;
+    }
+    .layui-input{
+        height: 30px;
+    }
+    .layui-btn-small{
+        padding: 0 14px;
+    }
+    .basic-search-yes,.advanced-search-btn{
+        margin-top: -2px;
+    }
+    .basic-search-yes{
+        margin-left: -5px;
+        .layui-icon{
+            right: 44px;
+            top: 48%;
+        }
+    }
+    .advanced-search-btn{
+        .layui-icon{
+            right: 4px;
+            top: 48%;
+        }
+    }
+    .magin-left-6{
+        margin-left: 6px;
+    }
+}
+//input
+.layui-custom-input{
+    outline: 0;
+    -webkit-appearance: none;
+    transition: all .3s;
+    -webkit-transition: all .3s;
+    box-sizing: border-box;
+    height: 30px;
+    line-height: 30px;
+    vertical-align: middle;
+    padding-left: 6px;
+    border:1px solid @input-border-color;
+    border-radius: 2px;
+}
+//layui-card-header
+.layui-card-header{
+    position: relative;
+    z-index: 20;
+}
+
+//list
+.layui-icon-ok:before {
+    content: "\e605";
+}
+.m-list{
+    font-size: 12px;
+}

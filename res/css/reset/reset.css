@@ -1,0 +1,16 @@
+body{
+    font: 14px '微软雅黑',Helvetica Neue,Helvetica,PingFang SC,\5FAE\8F6F\96C5\9ED1,Tahoma,Arial,sans-serif;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+::-ms-clear, ::-ms-reveal{display: none;}
+i{
+    font-style: normal;
+}
+strong{
+    font-weight: normal;
+}

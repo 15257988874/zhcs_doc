@@ -1,0 +1,90 @@
+.layui-fluid {
+  padding: 15px;
+}
+.layui-laypage {
+  float: right;
+}
+.layui-btn-sm {
+  padding: 0 20px;
+}
+.layui-btn-sm.more-font {
+  padding: 0 10px;
+}
+.layui-btn-small {
+  height: 30px;
+  line-height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+.layui-btn-group .more-btn > button:first-child {
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+}
+.layui-btn-group .more-btn > button:first-child ~ button {
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+.layui-btn-group .more-btn button {
+  display: none;
+}
+.layui-btn-group .more-btn .btn-more {
+  display: inline-block;
+}
+.layui-table-page .grid-btn > button {
+  margin-right: 0 !important;
+}
+.basic-search > .layui-form-item {
+  display: inline-block;
+  margin-bottom: 0;
+}
+.basic-search .layui-form-label {
+  padding: 6px 2px 6px 8px;
+}
+.basic-search .layui-input-block {
+  margin-left: 92px;
+}
+.basic-search .layui-input {
+  height: 30px;
+}
+.basic-search .layui-btn-small {
+  padding: 0 14px;
+}
+.basic-search .basic-search-yes,
+.basic-search .advanced-search-btn {
+  margin-top: -2px;
+}
+.basic-search .basic-search-yes {
+  margin-left: -5px;
+}
+.basic-search .basic-search-yes .layui-icon {
+  right: 44px;
+  top: 48%;
+}
+.basic-search .advanced-search-btn .layui-icon {
+  right: 4px;
+  top: 48%;
+}
+.basic-search .magin-left-6 {
+  margin-left: 6px;
+}
+.layui-custom-input {
+  outline: 0;
+  -webkit-appearance: none;
+  transition: all .3s;
+  -webkit-transition: all .3s;
+  box-sizing: border-box;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: middle;
+  padding-left: 6px;
+  border: 1px solid #e6e6e6;
+  border-radius: 2px;
+}
+.layui-card-header {
+  position: relative;
+  z-index: 20;
+}
+.layui-icon-ok:before {
+  content: "\e605";
+}
+.m-list {
+  font-size: 12px;
+}

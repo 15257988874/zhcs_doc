@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>取点模板</title>
+    <link rel="stylesheet" href="../../../res/dep/layui/css/layui.css">
+    <link rel="stylesheet" href="../../../res/css/web.css">
+</head>
+<body>
+    <div class="ycya-content">
+        <blockquote class="layui-elem-quote">
+            该模板为快速搭建树/列表+表格界面 <br>
+            使用方法:直接引用address.html
+        </blockquote>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="return">1.返回说明</a></legend>
+        </fieldset>
+        <div >
+            该页面返回一个实参(包括点的名称，经度以及纬度)
+            <font color="red">表单组件内已集成</font>
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a name="html">2.HTML模板</a></legend>
+            </fieldset>
+            <div >
+                需要在调用页面中添加下面的HTML片段。建议添加在body的最后面。
+                <font color="red">注意不要和其他元素冲突，ID等都不能改名</font>
+            </div>
+            <pre class="layui-code"  lay-title="取点模板代码片段">
+<div class="layui-fluid" >
+<div class="layui-row layui-col-space15">
+<div class="layui-col-md12">
+<div>
+<div class="yy-m-form-search">
+    <input type="text" id="suggestId" class="layui-input "placeholder="请输入地址" style="width:260px" />
+</div>
+<div id="searchResultPanel" class="yy-hide"></div>
+<div class="yy-m-form-map" id="betaMap">
+    <div id="map" class="commonDetaMap"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+            </pre>
+    </div>
+    <ul class="layui-fixbar"><li class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;display:none" id="scrollTop"></li></ul>
+    <script src="../../../res/js/lib/jquery-1.8.0.min.js" type="text/javascript" ></script>
+    <script src="../../../res/dep/layui/layui.all.js" type="text/javascript"></script>
+    <script src="../../../res/js/web.js"></script> 
+    <script>
+        var html= `<ul class="site-dir">
+                        <li> <a href="#return">返回说明</a> </li>
+                        <li> <a href="#html">HTML模板</a> </li>
+                    <ul></ul>`;
+            openDir({
+                html:html,
+                width:200,
+                height:200
+            });
+    </script>
+</body>
+</html>

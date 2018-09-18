@@ -1,0 +1,237 @@
+/* 此文件--用于高级查询组件和自动生成弹窗组件 */
+@boder-color:#eee;
+@font-color:#696969;
+@query-padding:16px;
+@btn-color:#0085FF;
+@input-select-pading:5px;
+@label-width:90px;
+//tools
+.pre(@style,@value){
+    -webkit-@{style}:@value;
+    -ms-@{style}: @value;
+    -o-@{style}:@value;
+    -moz-@{style}:@value;
+        @{style}:@value;
+}
+//layer reset
+.layui-layer-title{
+    background-color: #fff !important;
+}
+.layui-layer-btn{
+    padding: 0 25px 12px 16px !important;
+}
+.layui-layer-btn .layui-layer-btn0{
+    background-color: @btn-color !important; 
+}
+.layui-form select{
+    display: inline-block !important;
+}
+.layui-layer-content .layui-form-item{
+    margin-bottom:0;
+}
+.layui-table thead tr{
+    background-color: #fff;
+}
+//public class
+.relative{
+    position: relative;
+}
+.m-none{
+    display: none;
+}
+.m-block{
+    display: block;
+}
+.w-all{
+    width: 100%;
+}
+.w-half{
+    width: 49% !important;
+}
+.m-lf {
+    float: left;
+}
+.m-inline-block{
+    display: inline-block;
+}
+.m-rt{
+    float:right;
+}
+.max-height{
+    max-height: 500px;
+}
+//public style-custom
+.require-option{
+    color:#f00;
+    margin-right: 5px;
+}
+.block-item-class{
+    width:100%;
+    padding-right:20px; 
+}
+.two-item{
+    &>li{
+        width:50%;
+        &.block-item{
+            .block-item-class;
+        }
+    }
+} 
+.one-item{
+    &>li{
+        width:100%;
+        &.block-item{
+            .block-item-class;
+        }
+    }
+}
+.three-item{
+    &>li{
+        width:33.3%;
+        &.block-item{
+            .block-item-class;
+        }
+    }
+}
+.m-advanced-popup,.m-popup{
+    label{
+        .pre(box-sizing,border-box);
+        display: inline-block;
+        width: @label-width;
+        margin-left: -@label-width;
+        padding-right: 6px;
+        text-align: right;
+    }
+    input,textarea,select{
+        width: 100%;
+        border:1px solid @boder-color;
+    }
+    textarea{
+        .pre(box-sizing,border-box);
+        resize: none;
+        text-indent: 5px;
+        vertical-align: middle;
+        min-height: 40px;
+    }
+    input{
+        padding:@input-select-pading 0 ;
+        text-indent: 5px;
+    }
+    select{
+        padding:@input-select-pading 0 ;
+    }
+    &>li{
+        position: relative;
+        .pre(box-sizing,border-box);
+        display: inline-block;
+        line-height: 22px;
+        list-style: none;
+        padding-left:@label-width; 
+        padding-right: 20px;
+        &:not(:first-child){
+            margin-top: 5px;
+        }
+    }
+    .line{
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 18px;
+        right: 12px;
+    }
+    .form-btn-li{
+        display: none;
+        position: absolute;
+        bottom: 3px;
+        right: 0;
+        text-align: right;
+    }
+}
+//依赖layer的弹出框
+.m-popup{
+    .pre(box-sizing,border-box);
+    padding: 8px 10px 8px 0px;
+    background-color: #fff;
+    color:@font-color;
+    font-size: 12px;
+    max-height:400px;
+}
+//自定义的高级查询
+.m-advanced-popup{
+    position: absolute;
+    width: 500px;
+    right: 0;
+    top: 42px;
+    line-height: 38px;
+    padding-top: 16px;
+    border: 1px solid #e2e2e2;
+    box-shadow: 5px 6px 5px #d2d2d2;
+    .layui-form-item{
+        margin-bottom:0;
+    }
+    .btn-group{
+        margin-top: 10px;
+        text-align: right;
+        padding-right: 18px;
+    }
+}
+//btn
+.btn-li a{
+    display: inline-block;
+    vertical-align: top;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 15px;
+    border: 1px solid #dedede;
+    background-color: #fff;
+    color: #fff;
+    border-radius: 2px;
+    font-weight: 400;
+    cursor: pointer;
+    text-decoration: none;
+    border-color: #1E9FFF;
+    background-color: #1E9FFF;
+    &:hover{
+        opacity: .9;
+        text-decoration: none;
+    }
+}
+
+//TODO 表单追加table
+.margin0{
+    margin: 0 !important;
+}
+.table-wrap{
+    width: calc(~"100% - 62px") !important;
+    margin: 0 auto;
+    th{
+        border-bottom: 0 !important;
+    }
+    input,select{
+        width: 90%;
+        border:0;
+        background-color: transparent;
+    }
+}
+.table-title{
+    .pre(box-sizing,border-box);
+    position: relative;
+    padding: 9px 15px;
+    min-height: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    background-color: #f2f2f2;
+}
+/* .table-body{
+    max-height: 200px;
+    overflow: auto;
+} */
+.table-add,.table-del{
+    cursor: pointer;
+}
+.table-add{
+    color:#01AAED;
+}
+.table-del{
+    color: #FF5722;
+}

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>API</title>
+    <link rel="stylesheet" href="../../res/dep/layui/css/layui.css">
+    <link rel="stylesheet" href="../../res/css/web.css">
+</head>
+<body>
+   <div class="ycya-content">
+        <blockquote class="layui-elem-quote">
+            统计模板中常用API介绍
+        </blockquote>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="reportTitle">1.app.ui.reportTitle.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            用于生成统计模板头部数量信息,参数如下<br>
+            注:<font color="#f00">  <a name="reportTitleSet">标题赋值:</a> <br>
+                var header=app.ui.reportTitle.init(cfg); <br>
+                header.set([3,4,5]); 数组顺序与初始化item数组顺序一致
+            </font>
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="500">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>bgClass</td>
+                    <td>String</td>
+                    <th>无</th>
+                    <td>标题背景色,默认'yy-m-report-bg-gray',ycyaui.css中可自行扩展</td>
+                </tr>
+                <tr>
+                    <td>fClass</td>
+                    <td>String</td>
+                    <th>无</th>
+                    <td>标题字颜色,默认'yy-m-report-c-gray',支持'yy-m-report-c-gray/blue/red',ycyaui.css中可自行扩展</td>
+                </tr>
+                <tr>
+                    <td>vClass</td>
+                    <td>String</td>
+                    <th>无</th>
+                    <td>值字体颜色,默认'yy-m-report-c-blue',同上</td>
+                </tr>
+                <tr>
+                    <td>item</td>
+                    <td>Array</td>
+                    <th>
+                        <pre class="layui-code" lay-title="reportTitle item示例">
+[
+    {name:'本月漏油',unit:'升'},
+    {name:'上月漏油',unit:'升'},
+    {
+        name:'环比增长率',//标题名称
+        unit:'%',        //值单位
+        vClass:'yy-m-report-c-red', //值颜色class
+        value:20        //值
+    }
+]                            
+                        </pre>
+                    </th>
+                    <td>标题内容  <br>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="reportSearch">2.app.ui.reportSearch.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            用于生成统计模板搜索条件以及年月信息,参数如下 <br>
+            注:获取点击的信息(月/年/其他)<br><font color="#f00">
+                var search=app.ui.reportSearch.init(cfg); <br>
+                search.getStatus();// 0月 1年 2其他
+            </font>
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="500">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>yearNum</td>
+                    <td>Number</td>
+                    <th>2</th>
+                    <td>显示的年的个数,默认2</td>
+                </tr>
+                <tr>
+                    <td>quickQuery</td>
+                    <td>Array</td>
+                    <th>无</th>
+                    <td>快捷查询,默认[
+                        {name:'月统计数据',handle:function(){}},
+                        {name:'年统计数据',handle:function(){}}
+                    ]</td>
+                </tr>
+                <tr>
+                    <td>allowEmpty</td>
+                    <td>Boolean</td>
+                    <th>false</th>
+                    <td>查询条件中是否允许空值,默认false</td>
+                </tr>
+                <tr>
+                    <td>item</td>
+                    <td>Array</td>
+                    <th> 无</th>
+                    <td>搜索条件 <a href="#reportSearchItem">详见reportSearch item配置</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ready</td>
+                    <td>Function</td>
+                    <th> 无</th>
+                    <td>搜索块元素加载完成(用于做一些额外操作)
+                    </td>
+                </tr>
+                <tr>
+                    <td>conditionQuery</td>
+                    <td>Object</td>
+                    <th>{
+                        show:true,  //是否显示条件查询
+                        iconClass:''//条件查询字体前icon class
+                    } </th>
+                    <td>搜索块右侧条件查询,默认显示
+                    </td>
+                </tr>
+                <tr>
+                    <td>yearQueryBack</td>
+                    <td>Boolean</td>
+                    <th>true</th>
+                    <td>true 今年以前,false 今年以后,默认true
+                    </td>
+                </tr>
+                <tr>
+                    <td>refreshFn</td>
+                    <td>Function</td>
+                    <th>无</th>
+                    <td>该回调函数有一个实参(当前点击的时间信息),用于页面中刷新表格与统计图
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="reportSearchItem">reportSearch item配置</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="500">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>label</td>
+                    <td>String</td>
+                    <th>'选择部门'</th>
+                    <td>搜索条件左侧信息</td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>String</td>
+                    <th>'deptId'</th>
+                    <td>搜搜条件字段名(后台对应)</td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>String</td>
+                    <th>'select'</th>
+                    <td>搜索表单元素,支持input与select,默认input</td>
+                </tr>
+                <tr>
+                    <td>len</td>
+                    <td>Number</td>
+                    <th>140</th>
+                    <td>搜索表单元素长度</td>
+                </tr>
+                <tr>
+                    <td>dt</td>
+                    <td>String</td>
+                    <th>140</th>
+                    <td>搜索表单元素长度</td>
+                </tr>
+                <tr>
+                    <td>qt</td>
+                    <td>String</td>
+                    <th>'eq'</th>
+                    <td>拼接后台sql语句,eq(等于)、ne(不等于)、gt(大于)、lt(小于),like(包含),in(多值),btw(范围)</td>
+                </tr>
+                <tr>
+                    <td>cfg</td>
+                    <td>Object</td>
+                    <th>
+                        <pre class="layui-code" lay-title="时间/下拉框示例">
+//时间
+{type: 'datetime',format:'yyyy-MM-dd HH:mm:ss'}
+//下拉框
+{'label':'选择车型','name':'type','type':'select',
+'option':{//本地加载
+    '1':'扫地车',
+    '2':'装甲车'
+},
+cfg:{//服务器加载,优先级较高
+    url:'select.js',
+    type:'get', //请求方式,默认post
+    where:{}, //额外数据
+    beforeSuccess:function(data){//过滤数据,默认data.data 
+        return data.data.data.data;
+    },
+    keyName: 'foodName', //自定义返回数据中name的key, 默认 name
+    keyVal: 'id', //自定义返回数据中value的key, 默认 id
+}
+}
+                        </pre>
+                    </th>
+                    <td>时间/下拉框配置字段</td>
+                </tr>
+                <tr>
+                    <td>treeCfg</td>
+                    <td>Object</td>
+                    <th>{'url':'/page/default/tpl/tree.html?p=tree','title':'请选择部门'}</th>
+                    <td>树配置</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="echarts">3.app.ui.echarts.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            用于生成统计模板中的统计图,参数请参照ycyaui 中的 app.ui.echarts对象下barlineCfg/pieCfg属性<br>
+            <pre class="layui-code" lay-title="示例">
+
+var a=app.ui.echarts.barlineInit({//柱状图/折线图的初始化方法
+    type:'line',//bar line
+        YMyaxis:{
+            yname:'单位(元)'
+        },
+        YMtitle:{
+            ttext:'一级标题',
+            tsubtext:'二级标题'
+        } 
+});
+//柱状图/折线图的设值方法
+a.barlineSet([
+        '喀什市', '疏附县', '疏勒县', '英吉沙县' , '泽普县', '岳普湖县'/* , '巴楚县', '伽师县' , '叶城县', '莎车县 ','3333','3333','3333','3333','3333','3333' */
+],{ 
+    '接入率':[20, 50, 80, 58, 83, 68, 57, 80, 42, 66,12,25,36,45,25,65],
+    '在线率':[50, 51, 53, 61, 75, 87, 60, 62, 86, 46,12,25,36,45,25,65],
+    '完好率':[70, 48, 73, 68, 53, 47, 50, 72, 96, 86,12,25,36,45,25,65] ,
+    'jing' :[44, 70, 60, 61, 75, 87, 60, 62, 86, 46,12,25,36,45,25,65],
+    'light':[44, 70, 60, 61, 75, 87, 60, 62, 86, 46,12,25,36,45,25,65],
+    'test':[32, 70, 60, 61, 75, 87, 60, 62, 86, 46,12,25,36,45,25,65],
+    'one':[66, 70, 60, 61, 75, 87, 60, 62, 86, 46,12,25,36,45,25,65],
+    'two':[75, 70, 60, 61, 75, 87, 60, 62, 86, 46,12,25,36,45,25,65]
+});
+var b=app.ui.echarts.pieInit({//饼图初始化方法
+    YMPseries:{
+        sradius:["40%", "60%"]
+    }
+});
+b.pieSet( [{//饼图设值方法
+    {'value':2005,"name":"视频广告1",},
+    {'value':135,"name":"视频广告2",},
+    {'value':135,"name":"视频广告3",},
+    {'value':135,"name":"视频广告4",}
+]);
+
+            </pre>
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="report" style="color:#f00">4.app.ui.report.init(cfg)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            用于快速搭建统计模板(集成标题,搜索条件,统计图,表格),参数如下
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="500">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>title</td>
+                    <td>Object</td>
+                    <th>{
+                        item:[
+                            {name:'本月漏油',unit:'升'},
+                            {name:'上月漏油',unit:'升'},
+                            {name:'环比增长率',unit:'%',vClass:'yy-m-report-c-red'}
+                        ]  
+                    }</th>
+                    <td>标题信息,<a href="#reportTitle">参照reportTitle参数</a></td>
+                </tr>
+                <tr>
+                    <td>search</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>搜索条件,<a href="#reportSearch">参照reportSearch参数</a></td>
+                </tr>
+                <tr>
+                    <td>echart</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>统计图配置,<a href="#echart">echart</a></td>
+                </tr>
+                <tr>
+                    <td>grid</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>表格配置,该参数配置请参照表格API中的grid属性</td>
+                </tr>
+            </tbody>
+        </table>
+   </div>
+   <ul class="layui-fixbar"><li class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;display:none" id="scrollTop"></li></ul>
+   <script src="../../res/js/lib/jquery-1.8.0.min.js" type="text/javascript" ></script>
+   <script src="../../res/dep/layui/layui.all.js" type="text/javascript"></script>
+   <script src="../../res/js/web.js"></script>
+   <script>
+        var html= `<ul class="site-dir">
+                     <li>
+                         <a href="#reportTitle">app.ui.reportTitle.init(cfg)</a>
+                         <ul><li><a href="#reportTitleSet">标题赋值</a></li></ul>
+                     </li>
+                     <li>
+                         <a href="#reportSearch">app.ui.reportSearch.init(cfg)</a>
+                         <ul><li><a href="#reportSearchItem">reportSearch item 配置</a></li></ul>
+                     </li>
+                     <li>
+                         <a href="#echarts">app.ui.echarts.init(cfg)</a>
+                     </li>
+                     <li>
+                         <a href="#report">app.ui.report.init(cfg)</a>
+                     </li>
+                  </ul>`;
+           openDir({
+                html:html,
+                width:220,
+                height:300
+           });
+   </script>
+</body>
+</html>

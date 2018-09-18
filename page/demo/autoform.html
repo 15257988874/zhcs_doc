@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>单列模板</title>
+    <link rel="stylesheet" href="../../res/dep/layui/css/layui.css">
+    <link rel="stylesheet" href="../../res/css/web.css">
+</head>
+<body>
+   <div class="ycya-content">
+        <blockquote class="layui-elem-quote">
+            表单使用方法<br>
+            1.表单初始化(返回表单对象)<br>
+            2.表单操作(初始化或者赋值操作)<br>
+            3.弹出表单<br> 
+            注: <font color="#f00">假设表单初始化对象为popup(ycya.ui.autoform(para)的返回结果)</font>
+        </blockquote>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="formInit">1.表单初始化(ycya.ui.autoform())</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            用于初始化表单弹窗(<font color="#f00">重点</font>)
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="150">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>id</td>
+                    <td>String</td>
+                    <th>'yui-add'</th>
+                    <td>表单容器ID<font color="#f00">必填</font></td>
+                </tr>
+                <tr>
+                    <td>filter</td>
+                    <td>String</td>
+                    <th>'yui-add'</th>
+                    <td>表单过滤器，用于检测表单提交,触发验证(唯一性) <br>
+                        注: <font color="#f00">除高级查询以及查看弹窗生成外,必传</font>
+                    </td>
+                </tr>
+                <tr>
+                    <td>isAdvanced</td>
+                    <td>Boolean</td>
+                    <th>false</th>
+                    <td>是否高级查询,默认false</td>
+                </tr>
+                <tr>
+                    <td>allowEmpty</td>
+                    <td>Boolean</td>
+                    <th>false</th>
+                    <td>验证通过后,返回的数据中是否允许有空值,默认false</td>
+                </tr>
+                <tr>
+                    <td>colWidth</td>
+                    <td>String</td>
+                    <th>'two'</th>
+                    <td>一行2列或一行1列，支持(one,two),若要扩展,则需要扩展ycyaAq.less</td>
+                </tr>
+                <tr>
+                    <td>verType</td>
+                    <td>String</td>
+                    <th>'tips'</th>
+                    <td>表单验证失败提示方式,该参数有3个值,msg tips alert,默认tips</td>
+                </tr>
+                <tr>
+                    <td>submitFn</td>
+                    <td>Function</td>
+                    <th>submitFn: function (data) {
+                        console.log(data); 
+                    }</th>
+                    <td>该函数返回一个实参,即表单验证通过后的数据</td>
+                </tr>
+                <tr>
+                    <td>callback</td>
+                    <td>Function</td>
+                    <th>callback:function(obj){
+                        console.log(obj);
+                    }</th>
+                    <td>该函数返回一个实参,即当前表单对象,用于处理表单初始化完成后的额外操作</td>
+                </tr>
+                <tr>
+                    <td>item</td>
+                    <td>Array</td>
+                    <th><a href="#formItem">详见表单字段</a></th>
+                    <td>表单字段定义，格式为[{},{}],必填</td>
+                </tr>
+                <tr>
+                    <td>pcfg</td>
+                    <td>Object</td>
+                    <th><a href="#formPic">详见表单图片字段</a></th>
+                    <td>用于上传图片</td>
+                </tr>
+                <tr>
+                    <td>map</td>
+                    <td>Object</td>
+                    <th><a href="#formMap">详见表单地图字段</a></th>
+                    <td>用于创建左侧表单信息，右侧地图的表单</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="formItem">item-表单字段</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>label</td>
+                    <td>String</td>
+                    <th>'开始时间'</th>
+                    <td>字段标签名,<font color="#f00">必填</font></td>
+                </tr>
+                <tr>
+                    <td>name</td>
+                    <td>String</td>
+                    <th>'startTime'</th>
+                    <td>字段名,<font color="#f00">必填</font></td>
+                </tr>
+                <tr>
+                    <td>elmType</td>
+                    <td>String</td>
+                    <th>'select'</th>
+                    <td>元素类型,支持(input,textarea,select,p),默认input</td>
+                </tr>
+                <tr>
+                    <td>isBlock</td>
+                    <td>Boolean</td>
+                    <th>true</th>
+                    <td>该字段是否独占一行</td>
+                </tr>
+                <tr>
+                    <td>inputType</td>
+                    <td>String</td>
+                    <th>'password'</th>
+                    <td>生成密码框,暂只支持(password),自动MD5加密传输</td>
+                </tr>
+                <tr>
+                    <td>verify</td>
+                    <td>String</td>
+                    <th>'required||phone '</th>
+                    <td>layui内置验证,支持多条件验证(中间'||'隔开),可自定义验证</td>
+                </tr>
+                <tr>
+                    <td>qt</td>
+                    <td>String</td>
+                    <th>'gt'</th>
+                    <td>用于高级查询类,支持(eq,gt,lt,like,in)</td>
+                </tr>
+                <tr>
+                    <td>cfg</td>
+                    <td>Object</td>
+                    <th>time:{type: 'datetime',format:'yyyy-MM-dd HH:mm:ss'}<br/>
+                        <pre class="layui-code"  lay-title="select配置示例">
+select:{
+count:4,
+search:true,
+url:'select.js',
+cfg:{
+data:{'1':'男','2':'女'},
+type:"get",
+searchName:'foodName',//自定义搜索内容的key值
+keyName: 'foodName', //自定义返回数据中name的key, 默认 name
+keyVal: 'id',  //自定义返回数据中value的key, 默认 value
+beforeSuccess:function(id, url, searchVal, result){
+    return result.data.data.data;
+}
+}
+}
+                        </pre>
+                    </th>
+                    <td>用于时间弹窗以及select的配置( <font color="#f00">select支持本地和服务器加载，请参照示例,本地加载不传url和配置cfg中的各项自定义参数,优先服务器加载</font> )<br>
+                        <pre class="layui-code"  lay-title="select说明">
+count: 0代表不限制选择个数 1代表单选 大于1代表最多选择几个
+search:是否开启搜索
+data:本地加载数据 
+type:请求方式,默认post
+searchName:'',//自定义搜索内容的key值
+keyName: '', //自定义返回数据中name的key, 默认 name
+keyVal: '',  //自定义返回数据中value的key, 默认 value
+beforeSuccess:function(id, url, searchVal, result){
+    //处理数据格式
+    return result.data.data.data;
+}
+                        </pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td>dt</td>
+                    <td>String</td>
+                    <th>'date'</th>
+                    <td>支持(data,switch,text)</td>
+                </tr>
+                <tr>
+                    <td>handle</td>
+                    <td>Function</td>
+                    <th>无</th>
+                    <td>表单元素事件函数,用于扩展</td>
+                </tr>
+                <tr>
+                    <td>eventName</td>
+                    <td>String</td>
+                    <th>'click'</th>
+                    <td>表单元素事件名称,该参数包含2个大类<br>
+                        1.jquery支持的事件名称
+                        2.内置事件名称,暂支持(tree,address)
+                    </td>
+                </tr>
+                <tr>
+                    <td>treeCfg</td>
+                    <td>Object</td>
+                    <th>{   url:'/page/default/tpl/tree.html?p=tree',
+                            title:'请选择部门',
+                            name:'name'
+                    }</th>
+                    <td>树类弹窗,该参数配置遵循ztree树配置
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="formPic">pcfg-图片上传</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>btns</td>
+                    <td>Boolean</td>
+                    <th>是否需要按钮组</th>
+                    <td>按钮组,默认true</td>
+                </tr>
+                <tr>
+                    <td>auto</td>
+                    <td>Boolean</td>
+                    <th>是否自动上传</th>
+                    <td>默认true</td>
+                </tr>
+                <tr>
+                    <td>url</td>
+                    <td>String</td>
+                    <th>app.url+ 'file/up'</th>
+                    <td>图片上传地址</td>
+                </tr>
+                <tr>
+                    <td>max</td>
+                    <td>Number</td>
+                    <th>3</th>
+                    <td>最多上传几张</td>
+                </tr>
+                <tr>
+                    <td>required</td>
+                    <td>Boolean</td>
+                    <th>true</th>
+                    <td>是否必传</td>
+                </tr>
+                <tr>
+                    <td>picName</td>
+                    <td>String</td>
+                    <th>'pName'</th>
+                    <td>图片参数字段</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="formMap">map-表单地图</a></legend>
+        </fieldset>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>btns</td>
+                    <td>Boolean</td>
+                    <th>true</th>
+                    <td>按钮组,绘制 重汇</td>
+                </tr>
+                <tr>
+                    <td>btnToElm</td>
+                    <td>String</td>
+                    <th>'areaType'</th>
+                    <td>btn 关联select name</td>
+                </tr>
+                <tr>
+                    <td>btnToFilter</td>
+                    <td>String</td>
+                    <th>'areaType'</th>
+                    <td>btn 关联select filter</td>
+                </tr>
+                <tr>
+                    <td>btnToVal</td>
+                    <td>String</td>
+                    <th>'3'</th>
+                    <td>用于触发行政围栏弹窗的val值</td>
+                </tr>
+                <tr>
+                    <td>btnElmJson</td>
+                    <td>Object</td>
+                    <th>{
+                        0:'circle',
+                        1:'rectangle',
+                        2:'polygon'
+                    }</th>
+                    <td>绘制百度地图围栏的类型</td>
+                </tr>
+                <tr>
+                    <td>admin</td>
+                    <td>Object</td>
+                    <th>{
+                        'pointList':'pList',    //传给后台的经纬度key（经纬度逗号相隔）
+                        'circleRadius':'circleRadius', //若绘制圆，传给后台的圆心半径
+                        'circleCenter':'circleCenter'  //若绘制圆，传给后台的圆心坐标
+                    }</th>
+                    <td>行政围栏后台字段自定义</td>
+                </tr>
+                <tr>
+                    <td>lf</td>
+                    <td>Number</td>
+                    <th>300</th>
+                    <td>左侧表单宽度 ,注:打开此弹窗宽度为必传字段(lf+rt)</td>
+                </tr>
+                <tr>
+                    <td>rt</td>
+                    <td>Number</td>
+                    <th>500</th>
+                    <td>右侧地图宽度 ,注:打开此弹窗宽度为必传字段(lf+rt)</td>
+                </tr>
+                <tr>
+                    <td>height</td>
+                    <td>Number</td>
+                    <th>400</th>
+                    <td>内容整体高度 </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="layui-text">以下是一个表单初始化的应用例子</div>
+        <pre class="layui-code" lay-title="表单初始化">
+var commonObj={
+    id: 'yui-add',
+    filter: 'yui-add',
+    submitFn: function (data) {
+        //data 表单数据对象 
+    },
+    callback:function(obj){
+        //obj 当前表单对象
+    },
+    pcfg:{
+        
+        auto:false ,   //自动上传
+        multiple:true, //多选
+        url:app.url+ 'file/up',
+        max:3,         //图片最大张数
+        required:true, //是否必传
+        picName:'pic1' //接口图片字段
+    },
+    verType:'tips', //提示方式 支持 msg tips alert
+    item: [
+        {label:'开始时间',name: "startTime",verify:'required', qt: 'gt',dt: 'date',
+            cfg:{type: 'datetime',format:'yyyy-MM-dd HH:mm:ss'}
+        },
+        {label:'结束时间',name: "endTime",verify:'required',qt: 'lt',dt: 'date',
+            cfg:{type: 'datetime',format:'yyyy-MM-dd HH:mm:ss'}
+        },
+        {label:'操作',name:'opt',qt:'eq',dt: 'switch',cfg:{values:'1|2',text:'男|女'}},
+        {label:'部门',name:"deptId" ,verify:'required' ,qt:'eq',eventName:'tree',treeCfg:{
+            url:'/page/default/tpl/tree.html?p=tree',
+            title:'请选择部门',
+            name:'name'
+        }},
+        {label:'性别',elmType:'select',name: "userSex",qt: 'eq',isBlock:true,verify:'required',cfg:{
+            data:{'1':'男','2':'女','3':'保密','4':'你好'},count:0,values:'1',search:true
+        }},
+        {label:'食物',elmType:'select',name: "food",qt: 'eq',isBlock:true,verify:'required',cfg:{
+            count:4,search:true,url:'select.js',cfg:{
+                type:"get",
+                searchName: 'foodName',         //自定义搜索内容的key值
+                keyName: 'foodName',            //自定义返回数据中name的key, 默认 name
+                keyVal: 'id',                   //自定义返回数据中value的key, 默认 value
+                beforeSuccess:function(id, url, searchVal, result){
+                    return result.data.data.data;
+                }
+            }
+        }},
+        {label:'地点',name:"address"/* ,verify:'required' */,qt:'eq',isBlock:true,eventName:'address',treeCfg:{
+            url:'/page/default/tpl/address.html?p=address'
+        }},
+        {label: '描述',elmType: 'textarea',verify:'required',name: "remark",isBlock:true,qt:'like'}
+    ]
+},
+popup=app.ui.autoform(commonObj);
+        </pre>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="formReset">2.表单重置popup.reset()</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            用于表单重置信息( <em style="color:#f00 !important;">一般用于新增操作之前的表单重置</em> )
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="formSet">3.表单数据回显popup.set()</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            用于表单回显信息( <em style="color:#f00 !important;">一般用于修改操作数据回显</em> ),该方法有5个<font color="#f00">形参</font>，具体参数参见下表格
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>第一个参数</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>选中行的数据</td>
+                </tr>
+                <tr>
+                    <td>第二个参数</td>
+                    <td>Array</td>
+                    <th>无</th>
+                    <td>待特殊回显的数据name的集合( <font color="#f00">例如部门ID,角色ID等</font> )</td>
+                </tr>
+                <tr>
+                    <td>第三个参数</td>
+                    <td>Array</td>
+                    <th>['lng','lat']</th>
+                    <td>待回显经纬度的后台字段集合( <font color="#f00">暂只支持一个表单一个取点弹窗,多个数据回显尚未集成</font>)</td>
+                </tr>
+                <tr>
+                    <td>第四个参数</td>
+                    <td>String</td>
+                    <th>'picName'</th>
+                    <td>待回显的图片后台字段(<font color="#f00">暂只支持一个表单一个图片字段,多个图片字段尚未集成</font>))</td>
+                </tr>
+                <tr>
+                    <td>第五个参数</td>
+                    <td>Object</td>
+                    <th>{
+                        'points':'pList', //数据回显点集合后台字段
+                        'cirRadius':'circleRadius',//数据回半径后台字段
+                        'cirCenter':'circleCenter',//数据回圆心后台字段
+                        'admin' :true //用于区别行政围栏以及其他围栏
+                    }</th>
+                    <td>其他数据的回显</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="formAliasSet">4.表单特殊数据回显popup.aliasSet()</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            用于表单回显特殊信息( <em style="color:#f00 !important;">例如部门回显,一般用于修改操作特殊数据回显</em> ),该方法有2个<font color="#f00">形参</font>，具体参数参见下表格
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>第一个参数</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>选中行的数据</td>
+                </tr>
+                <tr>
+                    <td>第二个参数</td>
+                    <td>Object</td>
+                    <th>{'deptId':'deptName'}</th>
+                    <td>待特殊回显的数据,key为要填充的表单元素的name,value为要填充进去的后台字段( <font color="#f00">例如部门</font> )</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="formPopup">5.表单弹窗打开popup.popup(para)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            打开表单弹窗,该方法有一个形参，参数如下
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>title</td>
+                    <td>String</td>
+                    <th>'表单信息'</th>
+                    <td>弹窗标题</td>
+                </tr>
+                <tr>
+                    <td>btns</td>
+                    <td>Array</td>
+                    <th>[
+                            {'title':'确定','yes':true}, 
+                            {'title':'继续添加'，handle:function(){}},
+                            {'title':'取消'}
+                    ]</th>
+                    <td>弹窗按钮( <font>默认 确定，取消按钮</font>),确定按钮必传yes参数,,,其他按钮可自定义事件，默认点击关闭</td>
+                </tr>
+                <tr>
+                    <td>success</td>
+                    <td>Function</td>
+                    <th>无</th>
+                    <td>弹窗成功打开后的回调函数</td>
+                </tr>
+                <tr>
+                    <td>width</td>
+                    <td>Number</td>
+                    <th>500</th>
+                    <td>弹窗宽度，默认500,最小300</td>
+                </tr>
+                <tr>
+                    <td>height</td>
+                    <td>Number</td>
+                    <th>300</th>
+                    <td>弹窗高度，默认自适应</td>
+                </tr>
+                <tr>
+                    <td>anim</td>
+                    <td>Number</td>
+                    <th>1</th>
+                    <td>layer内置弹窗动画,1-6,默认4</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a  name="formClose">6.表单弹窗关闭popup.close()</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            关闭表单弹窗
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a  name="formDisabled">7.表单元素禁用与取消禁用popup.disabled()</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            表单元素禁用与取消禁用(input/textarea)，该方法有2个<font color="#f00">形参</font>，具体参数参见下表格
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>第一个参数</td>
+                    <td>Array</td>
+                    <th>无</th>
+                    <td>待禁用的表单元素name的集合</td>
+                </tr>
+                <tr>
+                    <td>第二个参数</td>
+                    <td>Boolean</td>
+                    <th>true</th>
+                    <td>禁用true ,取消禁用不传或者false <font color="#f00">select暂不支持</font></td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a  name="formSelDisabled">8.select下拉框禁用与取消禁用popup.selDisabled()</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            select下拉框禁用与取消禁用(input/textarea)，该方法有1个<font color="#f00">形参</font>，具体参数参见下表格
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>第一个参数</td>
+                    <td>Object</td>
+                    <th> popup.selDisabled({
+                        'dept':true  //dept代表要禁用/取消禁用的表单元素name值  true 代表禁用,false代表启用
+                    })</th>
+                    <td>待禁用的表单元素names</td>
+                </tr>
+            </tbody>
+        </table>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="formSelLinkage">9.表单select联动popup.selLinkage(para)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            表单select联动({})
+        </div>
+        <table class="layui-table">
+            <colgroup>
+                <col width="100">
+                <col width="100">
+                <col width="200">
+                <col>
+            </colgroup>
+            <thead>
+                <tr>
+                <th>参数</th>
+                <th>数据类型</th>
+                <th>示例</th>
+                <th>说明</th>
+                </tr> 
+            </thead>
+            <tbody>
+                <tr>
+                    <td>clickSel</td>
+                    <td>String</td>
+                    <th>无</th>
+                    <td>操作的select id(ID为 当前弹窗ID_操作select Name)</td>
+                </tr>
+                <tr>
+                    <td>linkSel</td>
+                    <td>String</td>
+                    <th>无</th>
+                    <td>联动的select id(ID为 当前弹窗ID_联动select Name)</td>
+                </tr>
+                <tr>
+                    <td>url</td>
+                    <td>String</td>
+                    <th>无</th>
+                    <td>联动的select 服务器地址</td>
+                </tr>
+                <tr>
+                    <td>count</td>
+                    <td>Number</td>
+                    <th>1</th>
+                    <td>区分联动select的多/单选,默认多选(0),可取值0,1</td>
+                </tr>
+                <tr>
+                    <td>type</td>
+                    <td>String</td>
+                    <th>无</th>
+                    <td>联动的select 请求方式,默认post</td>
+                </tr>
+                <tr>
+                    <td>cfg</td>
+                    <td>Object</td>
+                    <th>无</th>
+                    <td>联动的select 配置,参照select配置</td>
+                </tr>
+                <tr>
+                    <td>keyName</td>
+                    <td>String</td>
+                    <th>无</th>
+                    <td>代表联动select根据操作select添加的额外字段名称，默认 id</td>
+                </tr>
+            </tbody>
+        </table>
+        <pre class="layui-code" lay-title="select联动示例">
+popup.selLinkage({
+    clickSel:'yui-add_userSex',
+    linkSel:'yui-add_food',
+    cfg:{
+        data:{
+            name:'111' //额外参数
+        },
+        type:"get",
+        searchName: 'foodName',         //自定义搜索内容的key值
+        keyName: 'foodName',            //自定义返回数据中name的key, 默认 name
+        keyVal: 'id',                   //自定义返回数据中value的key, 默认 value
+        beforeSuccess:function(id, url, searchVal, result){
+            return result.data.data.data;
+        }
+    },
+    type:'',
+    url:'select.js', //后台地址
+    keyName:'ids' //
+});
+        </pre>
+        <blockquote class="layui-elem-quote">
+            <a > select1代表待监听select的ID(弹窗ID_select name)</a>
+            <pre class="layui-code" lay-title="select监听示例">
+layui.formSelects.on('select1', function(id, vals, val, isAdd, isDisabled){
+    //id:           点击select的id
+    //vals:         当前select已选中的值
+    //val:          当前select点击的值
+    //isAdd:        当前操作选中or取消
+    //isDisabled:   当前选项是否是disabled   
+}, true);
+            </pre>
+        </blockquote>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a>结语</a></legend>
+        </fieldset>
+        <div class="layui-text">
+           若对表单各参数以及方法尚不了解,请参照表单示例 <a href="../default/tpl/list.html?p=logList" target="mainIfm">示例</a>
+        </div>
+
+        <ul>
+            
+        </ul>
+   </div>
+   <ul class="layui-fixbar"><li class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;display:none" id="scrollTop"></li></ul>
+   <script src="../../res/js/lib/jquery-1.8.0.min.js" type="text/javascript" ></script>
+   <script src="../../res/dep/layui/layui.all.js" type="text/javascript"></script>
+   <script src="../../res/js/web.js"></script>
+   <script>
+       $(function(){
+           //右侧目录结构
+           var html= `<ul class="site-dir">
+                     <li> <a href="#formInit">表单初始化</a>
+                         <ul style="margin-left:5px">
+                             <li><a href="#formItem">item-表单字段</a></li>
+                             <li><a href="#formPic">pcfg-图片上传</a></li>
+                             <li><a href="#formMap">map-表单地图</a></li>
+                         </ul>
+                     </li>
+                     <li> <a href="#formReset">表单重置</a></li>
+                     <li> <a href="#formSet">表单数据回显</a></li>
+                     <li> <a href="#formAliasSet">表单特殊数据回显</a></li>
+                     <li> <a href="#formPopup">表单弹窗打开</a></li>
+                     <li> <a href="#formClose">表单弹窗关闭</a></li>
+                     <li> <a href="#formDisabled">表单元素禁用</a></li>
+                     <li> <a href="#formSelDisabled">下拉框禁用</a></li>
+                     <li> <a href="#formSelLinkage">表单元素联动</a></li>
+                 <ul></ul>`;
+           openDir({
+                html:html,
+                width:200,
+                height:300
+           });
+       });
+   </script>
+</body>
+</html>

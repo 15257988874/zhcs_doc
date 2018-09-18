@@ -1,0 +1,169 @@
+
+@bg-botttom-hight:486px;
+@input-bg:#145bb0;
+@input-border-color:#5578cf;
+.margin-bottom20{
+    margin-bottom: 20px;
+}
+//layui reset
+.layadmin-user-login{
+    padding:  0; 
+    min-height: 0;
+}
+.layui-input{
+    &:hover{
+        border-color: @input-border-color !important;
+    }
+}
+.layui-form-item .layui-form-checkbox[lay-skin=primary]{
+    margin-top:0;
+}
+.layui-form-checkbox[lay-skin=primary]{
+    span{
+        color:#fff;
+        padding: 0 4px;
+    }
+    i{
+        top:2px;
+        width: 12px;
+        height: 12px;
+        line-height: 12px;
+    }
+    &:hover{
+        i{
+            border-color: #d2d2d2;
+        }
+    }
+}
+.layui-form-checked[lay-skin=primary] {
+    i{
+        border-color:#0086FF;
+        background-color: #0086FF;
+    }
+}
+.layui-icon-username{
+    &:before{
+        position: relative;
+        top: 5px;
+        content:url('../../../res/img/userman.png');
+    }
+}
+.layui-icon-password{
+    &:before{
+        position: relative;
+        top: 5px;
+        content:url('../../../res/img/password.png');
+    }
+}
+.layui-input, .layui-textarea{
+    &:focus{
+        border-color: #5578cf!important;
+    }
+}
+//style
+.content-wrap{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    &>img{
+        width: 100%;
+        height: 100%;
+    }
+}
+@media (min-width: 1920px) {
+    .content {
+      top:18%;
+    }
+}
+@media screen and (min-width:1366px) and (max-width:1900px ){
+    .content {
+        top:10%;
+      }
+}
+
+@media screen and (min-width:992px) and (max-width:1366px ){
+    .content {
+        top:8%;
+      }
+}
+
+.content{
+    position: absolute;
+    // top:18%;
+    z-index: 50;
+    left:50%;
+    margin-left:-308px;
+    width:616px;
+    height: 411px;
+    &>.title{
+        width: 466px;
+        height: 30px;
+        margin: 0 auto;
+        background: url('../../../res/img/logo.png');
+        margin-bottom: 24px;
+    }
+    &>section{
+        width:100%;
+        height: 357px;
+        background: url('../../../res/img/bg_login.png');
+    }
+    .code{
+        position: absolute;
+        bottom: 54px;
+        left: 44px;;
+        width: 124px;
+        color:#fff;
+        cursor: pointer;
+        &>p{
+            box-sizing: border-box;
+            height: 32px;
+            padding: 4px 12px; 
+        }
+        .download-code{
+            float: right;
+            &:before{
+                position: relative;
+                top:2px;
+                content:url('../../../res/img/erwei.png');
+            }
+        }
+    }
+    label{
+        width: 44px;
+        height: 46px;
+        line-height: 46px;
+        background: #fff;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+    input[type="text"],[type="password"]{
+        height: 48px;
+        line-height: 48px;
+        background-color: @input-bg;
+        border-color: @input-border-color;
+        border-radius: 4px;
+        color: #fff;
+    }
+    .layui-icon-close{
+        display: none;
+        position: absolute;
+        top:16px;
+        right: 5px;
+        color:#fff;
+        cursor: pointer;
+    }
+}
+.login-box,.code-wrap{
+    position: absolute;
+    right: 48px;
+    top: 38px;
+    width: 300px;
+    .layui-btn{
+        background-color: #0086FF;
+    }
+}
+//二维码容器
+.code-wrap{
+    height: 250px;
+    z-index: -1;
+}
