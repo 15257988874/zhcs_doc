@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>javascript编码规范</title>
+    <link rel="stylesheet" href="../../../res/dep/layui/css/layui.css">
+    <link rel="stylesheet" href="../../../res/css/web.css">
+    <style>
+        .layui-field-title{
+            margin-bottom: 0;
+        }
+        .layui-field-title a{
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ycya-content">
+        <blockquote class="layui-elem-quote site-text">
+            程序是写给人读的，只是偶尔让计算机执行一下。—— Donald Knuth    
+        </blockquote>
+        <h1 class="site-h1">javascript编码规范</h1>
+        <hr>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a name="indent">缩进</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>使用<code class="underline-code">4</code>个空格作为一个缩进层级,不允许使用<code class="underline-code">2</code>个空格或者<code
+                        class="underline-code">tab</code>字符</li>
+                    <li><code class="underline-code">switch</code> 下的 <code class="underline-code">case</code> 和 <code class="underline-code">default</code> 必须增加一个缩进层级</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="120px">
+switch (variable) {
+    case 1:
+        break;
+    default:
+        break;
+}
+            </pre>
+            <div class="layui-text">
+                <ul>
+                    <li>对象以缩进的形式书写，不要写在一行</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="160px">
+// better
+let obj = {
+    a: 1,
+    b: 2
+}
+
+// bad
+let obj = { a: 1, b: 2 }
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="smei">分号</a></legend>
+            </fieldset>
+            <div class="layui-text">任何语句结尾都需要加分号 ;</div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+do {
+    x++;
+} while (x < 10);
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="space">空格</a> </legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>二元运算符两侧必须有一个空格，一元运算符与操作对象之间不允许有空格</li>
+                    <li>用作代码块起始的左花括号 <code class="underline-code">{</code> 前必须有一个空格</li>
+                    <li><code class="underline-code">if / else / for / while / function / switch / do / try / catch / finally</code> 等关键字后，必须有一个空格</li>
+                    <li>单行注释 <code class="underline-code">//</code> 后需要空格（若单行注释和代码同行，则 <code class="underline-code">//</code> 前也需要）</li>
+                    <li>行尾不得有多余的空格</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+var len = !arr.length;
+if (len) {
+    Demo(1, 2);
+}
+
+// 函数
+function Demo(a, b) {
+    var obj = { // 对象
+        a: 1
+    }
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="enter">换行</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>每个语句必须另起一行</li>
+                    <li>变量赋值后需要换行</li>
+                    <li> <code class="underline-code">{</code> 后需要换行，<code class="underline-code">}</code> 前需要换行</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+var a, b,
+    c = true;
+if (c) {
+    return;
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="comment">注释</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li> 单行注释使用 <code class="underline-code">//</code>，多行注释使用 <code class="underline-code">/* */</code><code></li>
+                    <li> 缩进与下一行代码保持一致</li>
+                    <li> 文档 / 接口注释使用以下写法</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+/**
+* 文档描述
+* @author 作者
+* @date 创建时间
+* @update 更新者 更新时间
+*/
+
+/**
+* 接口描述
+* @param {String} title - 弹窗标题内容
+* @param {String} cancelBtnText = '默认值' - 取消按钮文本
+* @param {object} obj - 参数 obj 为一个对象
+* @param {String} obj.str - 参数 obj 的 str 属性
+* return
+*/
+function (title, cancelBtnText, obj) {
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="quote">引号</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                最外层统一使用单引号 <code class="underline-code">''</code>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+var str = '<div id="test"></div>';
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="name">命名</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>标准变量使用驼峰命名</li>
+                    <li>常量全大写，用下划线连接</li>
+                    <li>类 / 构造函数每个单词首字母大写</li>
+                    <li>jquery 对象必须以 $ 开头命名</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+var strObj = '{a: 1}';
+const MAX_COUNT = 10;
+function TextNode(options) {
+}
+var $body = $('body');
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="state">变量声明</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>变量在使用前必须通过 <code class="underline-code"> var / let / const</code> 定义</li>
+                    <li>不要使用未声明的变量，也不要先使用后声明</li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="obect">对象</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                对象属性名不需要加引号，有特殊字符除外
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+var obj = {
+    name: 'test',
+    age: 20,
+    'max-weight': 60
+};                  
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="brace">大括号</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                    <code class="underline-code">if / else / for / while / do / switch / try / catch</code> 等关键字后必须有大括号（即使代码块的内容只有一行）
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+if (true) {
+    return;
+}                   
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="else">其他</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                   <li>用 <code class="underline-code">===</code>, <code class="underline-code">!==</code> 代替 <code class="underline-code">==</code>, <code class="underline-code">!=</code></li>
+                   <li>debugger 不要出现在生产环境的代码里</li>
+                   <li>不要在循环内部声明函数</li>
+                   <li>不允许有空的代码块</li>
+            </div>
+        </div>
+    </div>
+    <script src="../../../res/js/lib/jquery-1.8.0.min.js"></script>
+    <script src="../../../res/dep/layui/layui.all.js"></script>
+    <script src="../../../res/js/web.js"></script>
+    <script>
+     $(function(){
+           //右侧目录结构
+           var html= `<ul class="site-dir">
+                     <li> <a href="#indent">缩进</a></li>
+                     <li> <a href="#smei">分号</a></li>
+                     <li> <a href="#space">空格</a></li>
+                     <li> <a href="#enter">换行</a></li>
+                     <li> <a href="#comment">注释</a></li>
+                     <li> <a href="#quote">引号</a></li>
+                     <li> <a href="#name">命名</a></li>
+                     <li> <a href="#state">变量声明</a></li>
+                     <li> <a href="#object">对象</a></li>
+                     <li> <a href="#brace">大括号</a></li>
+                     <li> <a href="#else">其他</a></li>
+                 <ul></ul>`;
+           openDir({
+                html:html,
+                width:200,
+                height:300
+           });
+       });
+    </script>
+</body>
+</html>

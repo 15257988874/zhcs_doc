@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>css规范</title>
+    <link rel="stylesheet" href="../../../res/dep/layui/css/layui.css">
+    <link rel="stylesheet" href="../../../res/css/web.css">
+    <style>
+        .layui-field-title{
+            margin-bottom: 0;
+        }
+        .layui-field-title a{
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="ycya-content">
+        <blockquote class="layui-elem-quote site-text">
+            程序是写给人读的，只是偶尔让计算机执行一下。—— Donald Knuth    
+        </blockquote>
+        <h1 class="site-h1">css编码规范</h1>
+        <hr>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a name="indent">缩进</a></legend>
+            </fieldset>
+            <div class="layui-text">使用<code class="underline-code">4</code>个空格作为一个缩进层级,不允许使用<code class="underline-code">2</code>个空格或者<code
+                    class="underline-code">tab</code>字符
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+.selector{
+    margin:0;
+    padding:0;
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="smei">分号</a></legend>
+            </fieldset>
+            <div class="layui-text">每个属性声明末尾都要加分号</div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+.selector{
+    margin:0;
+    padding:0;
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="space">空格</a> </legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li><code class="underline-code">：</code> 与属性值之间需要空格，与属性名之间不需要空格</li>
+                    <li>选择器 <code class="underline-code">> + ~</code> 等前后需要空格</li>
+                    <li>注释 <code class="underline-code">/*</code> 后和 <code class="underline-code">*/</code> 前需要空格</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+.selector > .wrapper{
+    font-family: "Hiragino Sans GB", sans-serif;
+    background: rgba(0, 0, 0, 0.5) url(logo.png) no-repeat center / contain;
+    height: 100%;
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="enter">换行</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>当一个规则包含多个选择器时，每个选择器声明必须独占一行</li>
+                    <li>每个属性定义必须另起一行</li>
+                    <li> <code class="underline-code">{</code> 后需要换行，<code class="underline-code">}</code> 前需要换行</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+.wrapper,
+.selector {
+    width: 100%;
+    height: 100%;
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="comment">注释</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li> <code>统一使用 <code class="underline-code">/* */</code> 进行注释</li>
+                    <li> 可位于一个代码行的末尾，与代码间隔一个空格</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+.wrapper,
+.selector {
+
+/* 字体相关 */
+font-family: 'DINPro';
+font-size: 16px;
+font-weight: 700; /* 字重 */
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="quote">引号</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li> 引号统一使用双引号</li>
+                    <li>属性选择器中的属性值需要引号</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+[class="demo"]::after {
+    content: "";
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="name">命名</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>类名使用小写字母，以中划线 <code class="underline-code">-</code> 分隔</li>
+                    <li>id使用驼峰命名</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+.demo-test,
+#testDemo {
+    width: 100%;
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="short">属性简写</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>支持简写的属性尽量使用简写</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+/* better */
+.selector {
+    background: rgba(0, 0, 0, 0.5) url(logo.png) no-repeat center / contain;
+}
+
+/* bad */
+.selector {
+    background-color: rgba(0, 0, 0, 0.5);
+    background-image: url(logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="sort">属性声明顺序</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>影响文档流的属性（比如：display / position / float / clear / visibility 等）</li>
+                    <li>自身盒模型的属性（比如：width / height / margin / padding / border 等</li>
+                    <li>排版相关属性（比如：font / line-height / text-align / vertical-align 等）</li>
+                    <li>装饰性属性（比如：color / background / opacity / cursor 等）</li>
+                    <li>CSS3 新特性（比如：transform / transition / animation 等）</li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="else">其他</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>不允许有空的规则</li>
+                    <li>元素选择器用小写字母</li>
+                    <li>属性值 <code class="underline-code">0</code> 后面不要加单位</li>
+                    <li>不要在一个文件里出现两个相同的规则</li>
+                    <li>发布的代码中不要有  <code class="underline-code">@import</code></li>
+                    <li>尽量不用 <code class="underline-code">*</code> 选择器</li>
+                    <li>尽量少用 <code class="underline-code">!important</code> 来加权重</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="../../../res/js/lib/jquery-1.8.0.min.js"></script>
+    <script src="../../../res/dep/layui/layui.all.js"></script>
+    <script src="../../../res/js/web.js"></script>
+    <script>
+     $(function(){
+           //右侧目录结构
+           var html= `<ul class="site-dir">
+                     <li> <a href="#indent">缩进</a></li>
+                     <li> <a href="#smei">分号</a></li>
+                     <li> <a href="#space">空格</a></li>
+                     <li> <a href="#enter">换行</a></li>
+                     <li> <a href="#comment">注释</a></li>
+                     <li> <a href="#quote">引号</a></li>
+                     <li> <a href="#name">命名</a></li>
+                     <li> <a href="#short">属性简写</a></li>
+                     <li> <a href="#sort">属性声明顺序</a></li>
+                     <li> <a href="#else">其他</a></li>
+                 <ul></ul>`;
+           openDir({
+                html:html,
+                width:200,
+                height:300
+           });
+       });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>html编码规范</title>
+    <link rel="stylesheet" href="../../../res/dep/layui/css/layui.css">
+    <link rel="stylesheet" href="../../../res/css/web.css">
+    <style>
+        .layui-field-title{
+            margin-bottom: 0;
+        }
+        .layui-field-title a{
+            font-weight: bold;
+        }
+    </style>
+    <script src="../../../res/js/lib/jquery-1.8.0.min.js"></script>
+    <script src="../../../res/dep/layui/layui.all.js"></script>
+    <script src="../../../res/js/web.js"></script>
+    <script>
+     $(function(){
+           //右侧目录结构
+           var html= `<ul class="site-dir">
+                     <li> <a href="#geammar">语法</a></li>
+                     <li> <a href="#IE">IE兼容模式</a></li>
+                     <li> <a href="#doc">引入css，js</a></li>
+                     <li> <a href="#boolean">boolean属性</a></li>
+                     <li> <a href="#reduce">减少标签数量</a></li>
+                     <li> <a href="#total">实用高于完美</a></li>
+                 <ul></ul>`;
+           openDir({
+                html:html,
+                width:200,
+                height:300
+           });
+       });
+    </script>
+</head>
+
+<body>
+    <div class="ycya-content">
+        <blockquote class="layui-elem-quote site-text">
+            程序是写给人读的，只是偶尔让计算机执行一下。—— Donald Knuth    
+        </blockquote>
+        <h1 class="site-h1">html编码规范</h1>
+        <hr>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a name="grammar">语法</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>使用<code class="underline-code">4</code>个空格作为一个缩进层级,不允许使用<code class="underline-code">2</code>个空格或者<code
+                        class="underline-code">tab</code>字符</li>
+                    <li>在属性上，使用双引号 <code class="underline-code">“”</code>，不要使用单引号 <code class="underline-code">’‘</code></li>
+                    <li>属性名 / 属性值全小写，用中划线 <code class="underline-code">-</code> 做分隔符</li>
+                    <li>不要在自动闭合标签结尾处使用斜线，例：<code class="underline-code">img</code></li>
+                    <li>不要忽略可选的关闭标签</li>
+                    <li>自定义属性必须使用 <code class="underline-code">data-</code> 前缀</li>
+                </ul>
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+<!-- good -->
+<ul>
+    <li class="first-child">first</li>
+    <li data-index="2">second</li>
+</ul>
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="IE">IE 兼容模式</a></legend>
+            </fieldset>
+            <div class="layui-text">用 <code class="underline-code"><meta></code> 标签可以指定页面应该用什么版本的 IE 来渲染，PC 端项目，建议启用 IE Edge 模式</div>
+            <pre class="layui-code" lay-title="示例" lay-height="100px">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="doc">引入 CSS、JS</a> </legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>根据 HTML5 规范, 通常在引入 CSS 和 JS 时不需要指明 type，因为 <code class="underline-code">text/css </code>和 <code class="underline-code">text/javascript </code>分别是他们的默认值</li>
+                    <li>在引入 CSS 时，必须指明 <code class="underline-code">rel="stylesheet"</code></li>
+                    <li>将 script 放在页面中间将阻断页面的渲染，出于性能方面的考虑，如非必要，JavaScript 应当放在页面末尾</li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="boolean">boolean 属性</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                boolean 属性指不需要声明取值的属性，XHTML 需要每个属性声明取值，但是 HTML5 并不需要
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="200px">
+<!-- good -->
+<input type="text" disabled>
+<input type="checkbox" value="1" checked>
+
+<!-- bad -->
+<input type="text" disabled="disabled">
+<input type="checkbox" value="1" checked="true">
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="reduce">减少标签数量</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                在编写HTML代码时，需要尽量避免多余的父节点
+            </div>
+            <pre class="layui-code" lay-title="示例" lay-height="160px">
+<!-- good -->
+<img class="logo">
+
+<!-- bad -->
+<span class="logo">
+    <img >
+</span>
+            </pre>
+        </div>
+        <div>
+            <fieldset class="layui-elem-field layui-field-title site-title">
+                <legend><a  name="total">实用高于完美</a></legend>
+            </fieldset>
+            <div class="layui-text">
+                <ul>
+                    <li>尽量遵循 HTML 标准和语义，但是不应该以浪费实用性作为代价</li>
+                    <li>任何时候都要用尽量小的复杂度和尽量少的标签来解决问题</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>
