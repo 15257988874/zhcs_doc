@@ -24,28 +24,29 @@
                     simpleData: {enable: true,idKey: "id",pIdKey: "pId",rootPId: 0},
                     key:{name:'name'}
                 },callback:{}
-            } <br>
-            
-            注: <font >获取树对象  result.getTree() (ztree对象,可使用ztree的API)</font>
-            <!-- <a href="../default/tpl/list2col.html?p=test" target="mainIfm">示例</a> -->
+            }
+            <ul>
+                <li><font  color="#f00">获取树对象  result.getTree() (ztree对象,可使用ztree的API)</font></li>
+                <li><font  color="#f00">树重载  result.getTree().reload()</font></li>
+            </ul>
         </div>
         <fieldset class="layui-elem-field layui-field-title site-title">
             <legend><a name="search">2.app.ui.search.init(cfg)</a></legend>
         </fieldset>
         <div class="layui-text">
-            此方法用于初始搜索条件,默认搜索key为 qry_元素name_元素qt
-            <br>
-            注: 1.<font >result.getValueQry() <br>
+            <ul>
+                <li><font >result.getValueQry() <br>
                     结果示例:{"qry_userType_eq":"-1"}
-                </font><br>
-                2.<font >result.getValue() <br>
+                </font></li>
+                <li><font >result.getValue() <br>
                     结果示例:{"gpsTime":{"qry_gpsTime_eq":""},"optTime":{"qry_optTime_gt":"","qry_optTime_lt":""},"userType":{"qry_userType_eq":"-1"},"userName":{"qry_userName_like":"1"}}
-                </font>
+                </font></li>
+            </ul>
         </div>
         <fieldset class="layui-elem-field layui-field-title site-title">
             <legend><a name="grid">3.app.ui.grid.init(cfg)</a></legend>
         </fieldset>
-        <div class="layui-text">
+        <div style="line-height: 22px;font-size: 14px;color: #666;">
             此方法用于生成表格,配置参照layui 数据表格配置,默认配置为
             {
                 id:'ycyaGrid',   
@@ -60,20 +61,59 @@
                 limits: [10, 20, 50],
                 method: 'post',
                 where:{}
-            }
-            <br>
-            注: 1.<font >result.qry(para),根据条件刷新表格 <br>
+            } <br>
+            <font color="#f00">注:当一个页面有多个表格，且都是app.ui.grid.init()初始化时，须加上parent节点(例如$('#parent'))用于区分</font>
+            <ul>
+                <li><font >result.qry(para),根据条件刷新表格 <br>
                     参数示例:para={name:'11'}
-                </font><br>
-                2.<font >app.ui.grid.rowBtn(cfg),生成操作按钮(常用于表格右侧操作按钮) <br>
-                    参数示例:app.ui.grid.rowBtn({title:'删除',css:['layui-btn-danger'],event:'del'})
-                </font><br>
-                3.<font >result.getRows(boolean),获取勾选行的数据/获取勾选行的数据ID集合(字符串，中间逗号相隔) <br>
+                </font></li>
+                <li><font >app.ui.grid.rowBtn(cfg),生成操作按钮(常用于表格右侧操作按钮) 
+                    <div>
+                        <pre class="layui-code" lay-title="按钮示例">
+//单按钮                            
+app.ui.grid.rowBtn({
+    title: '修改',  //按钮名称(当按钮图标存在时，即为提示框中的文字)
+    event: 'modOne', //事件名称，唯一性
+    icon: 'icon-tianjia', //按钮字体图标,统一采用阿里巴巴的字体库
+    direction:3, //提示方向 1上 2右 3下 4左，默认上
+    css: ['layui-bg-blue'],//按钮继承的class
+    color:'#444' ,//字体颜色
+    tipBg:'#f00',//tips背景色 默认白色
+    tipColor:'#fff'  //tips字体颜色,默认#444
+});
+//多按钮
+app.ui.grid.rowBtn([
+{
+    title: '新增',  
+    event: 'modAdd', 
+    icon: 'icon-tianjia', 
+    direction:3, 
+    css: ['layui-bg-blue'],
+    color:'#444' ,
+    tipBg:'#f00',
+    tipColor:'#fff'  
+},{
+    title: '修改',  
+    event: 'modMod', 
+    icon: 'icon-tianjia',
+    direction:3, 
+    css: ['layui-bg-blue'],
+    color:'#444' ,
+    tipBg:'#f00',
+    tipColor:'#fff'  
+}
+]);
+
+                        </pre>
+                    </div>
+                </font></li>
+                <li><font >result.getRows(boolean),获取勾选行的数据/获取勾选行的数据ID集合(字符串，中间逗号相隔) <br>
                     参数示例:true返回数据id集合,反之获取勾选行的ID集合
-                </font><br>
-                4.<font >result.delRows(callback),用于快速删除行 <br>
+                </font></li>
+                <li><font color="#f00" >result.delRows(callback),用于快速删除行 <br>
                     参数示例:直接传入ajax请求回调即可(已过滤未选中数据情况,弹窗自动弹出)
-                </font>
+                </font></li>
+            </ul>
         </div>
         <pre class="layui-code" lay-title="表格示例">
 grid:{
