@@ -334,7 +334,7 @@ app.ui.page={};
             colWidth: 'two',   //一行2列或一行1列
             callBack: function () {}, //回调函数 
             submitFn:function(){},    //提交函数 
-            verType:'tips', //用于定义异常提示层模式。 tips（吸附层,默认）alert（对话框） msg           
+            verType:'tips', //用于定义异常提示层模式。 tips（吸附层,默认）alert（对话框） msg     
             item: [] //表单元素列表
             /* 渲染选项{label:'姓名',elmType:'input',name:"userName",'isBlock':true}
             elmType:            input、textarea、select
@@ -355,7 +355,7 @@ app.ui.page={};
         $.extend(this._cfg, cfg);
         this.loaded = false;
         var jsLoader = new YcyaLoader();
-        jsLoader.loadFileList([getContentPath()+'/res/js/component/advancedQuery/ycyaAq.css'],function(){});
+        jsLoader.loadFileList([/* getContentPath()+ */'/res/js/component/advancedQuery/ycyaAq.css'],function(){});
         this.init(this._cfg);
     }
     Autoform.prototype = {
@@ -408,7 +408,7 @@ app.ui.page={};
                 });
                 if(!mapflag){
                     var _jsLoader=new YcyaLoader();
-                    _jsLoader.loadFileList([getContentPath()+'/res/dep/ycyaMap/YcyaMap.js'],function(){
+                    _jsLoader.loadFileList([/* getContentPath()+ */'/res/dep/ycyaMap/YcyaMap.js'],function(){
                         var _mapTimer=setInterval(function(){
                             if( $('#'+_this.mapId).length>0 ){
                                 _this.map=app.ui.map.init({id:_this.mapId});
@@ -486,7 +486,7 @@ app.ui.page={};
                         });
                         if(!md5flag){
                             var _jsLoader=new YcyaLoader();
-                            _jsLoader.loadFileList([getContentPath()+'/res/dep/md5/md5.js'],function(){
+                            _jsLoader.loadFileList([/* getContentPath()+ */'/res/dep/md5/md5.js'],function(){
                             });
                         }
                         _li.append($('<div class="' + divStyle + '"><input type="password" name="'+con.name+'" lay-vertype="'+verType+' " lay-verify="' + verify + '" id="'+con.name+'_"></div>'));
@@ -1286,7 +1286,7 @@ app.ui.page={};
                 type: 2, 
                 area: ['500px', '300px'],
                 title:cfg.title || '请选择部门',
-                content: getContentPath()+cfg.url,
+                content: /* getContentPath()+ */cfg.url,
                 btn:['确定'],
                 yes:function(index, layero){
                     var iframeWin = $(layero).find('iframe')[0].contentWindow;
@@ -1318,7 +1318,7 @@ app.ui.page={};
                 type: 2, 
                 area: ['500px', '415px'],
                 title:cfg.title || '地点',
-                content: getContentPath()+cfg.url,
+                content: /* getContentPath()+ */cfg.url,
                 btn:['确定'],
                 yes:function(index, layero){
                     var iframeWin = $(layero).find('iframe')[0].contentWindow;
@@ -1344,8 +1344,8 @@ app.ui.page={};
             });
             if(!ztreeflag){
                 var _jsLoader=new YcyaLoader();
-                _jsLoader.loadFileList([getContentPath()+'/res/dep/zTree/css/zTreeStyle/zTreeStyle.css',
-                    getContentPath()+'/res/dep/zTree/js/jquery.ztree.all.js'],function(){});
+                _jsLoader.loadFileList([/* getContentPath()+ */'/res/dep/zTree/css/zTreeStyle/zTreeStyle.css',
+                    /* getContentPath()+ */'/res/dep/zTree/js/jquery.ztree.all.js'],function(){});
             }
         },
         openAdmin:function(){
@@ -1579,7 +1579,7 @@ app.ui.form={
             type: 2, 
             area: ['500px', h+'px'],
             title:cfg.title || '表单信息',
-            content: getContentPath()+cfg.url,
+            content: /* getContentPath()+ */cfg.url,
             btn:btns,
             anim:app.ui.anim,
             success: function(layero, index){
@@ -1683,8 +1683,8 @@ app.ui.tree = {
         var treeCfg = this._cfg,_this=this,loadFlag=0;
         this.loaded = false;
         var jsLoader = new YcyaLoader();
-        jsLoader.loadFileList([getContentPath()+'/res/dep/zTree/css/zTreeStyle/zTreeStyle.css',
-            getContentPath()+'/res/dep/zTree/js/jquery.ztree.all.js'],function(){
+        jsLoader.loadFileList([/* getContentPath()+ */'/res/dep/zTree/css/zTreeStyle/zTreeStyle.css',
+            /* getContentPath()+ */'/res/dep/zTree/js/jquery.ztree.all.js'],function(){
             if(!$("#yui-tree").hasClass("ztree"))$("#yui-tree").addClass("ztree");
             if(cfg.url && cfg.url!=''){
                 ycya.http.ajax(cfg.url,{
@@ -3176,7 +3176,7 @@ app.ui.reportSearch={
             type: 2, 
             area: ['500px', '300px'],
             title:cfg.title || '请选择部门',
-            content: getContentPath()+cfg.url,
+            content: /* getContentPath()+ */cfg.url,
             btn:['确定'],
             yes:function(index, layero){
                 var iframeWin = $(layero).find('iframe')[0].contentWindow;
@@ -4206,7 +4206,7 @@ $(function(){
         var js = app.router[page];
         if(js){
             var jsLoader = new YcyaLoader();
-            jsLoader.loadFile(getContentPath()+js,function(){});
+            jsLoader.loadFile(/* getContentPath()+ */js,function(){});
         }else{
             alert('cfg error');
         }

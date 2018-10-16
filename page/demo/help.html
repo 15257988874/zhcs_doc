@@ -14,7 +14,7 @@
             该页面用于介绍使用中常遇到的问题
         </blockquote>
         <fieldset class="layui-elem-field layui-field-title site-title">
-            <legend><a name="use">获取表格参数(当前页,每页的条数)</a></legend>
+            <legend><a name="tablePara">获取表格参数(当前页,每页的条数)</a></legend>
         </fieldset>
         <div class="layui-text">
             使用场景<br>
@@ -22,23 +22,28 @@
             <font color="red">1.使用 var table=app.ui.grid.init()初始化时,table.tableIns.config.page.curr</font><br>
             <font color="blue">注:每个层级获取的数据可自行打印出来</font>
         </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="select">表单弹窗select下拉框未覆盖在弹窗之上</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            <font color="red">使用场景：适用于表单元素较少的弹窗(包含select元素)</font><br>
+            <font color="blue">base.js中,app.css中加入对应的页面js的名称即可</font>
+        </div>
    </div>
    <ul class="layui-fixbar"><li class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;display:none" id="scrollTop"></li></ul>
    <script src="../../res/js/lib/jquery-1.8.0.min.js" type="text/javascript" ></script>
    <script src="../../res/dep/layui/layui.all.js" type="text/javascript"></script>
    <script src="../../res/js/web.js"></script>
    <script>
-        /* var html= `<ul class="site-dir">
-                     <li> <a href="#use">使用步骤</a> </li>
-                     <li> <a href="#html">HTML模板</a></li>
-                     <li> <a href="#demo">使用示例</a></li>
-                     <li> <a href="#json">后台返回数据格式</a></li>
+        var html= `<ul class="site-dir">
+                     <li> <a href="#tablePara">获取表格参数</a> </li>
+                     <li> <a href="#select">select问题</a> </li>
                  <ul></ul>`;
            openDir({
                 html:html,
                 width:200,
                 height:200
-           }); */
+           });
    </script>
 </body>
 </html>
