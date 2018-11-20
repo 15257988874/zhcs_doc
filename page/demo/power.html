@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>权限</title>
+    <link rel="stylesheet" href="../../res/dep/layui/css/layui.css">
+    <link rel="stylesheet" href="../../res/css/web.css">
+</head>
+<body>
+   <div class="ycya-content">
+        <blockquote class="layui-elem-quote">
+            页面权限/功能权限
+        </blockquote>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="tablePara">页面权限(左侧菜单栏)</a></legend>
+        </fieldset>
+        <div class="layui-text">
+            注:后台返回数据须为id,pid的格式
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="tablePara">表格右侧按钮</a></legend>
+        </fieldset>
+        <div><img style="height: 300px;" src="../../res/img/grid_btn.png" alt=""></div>
+        <div>
+<pre class="layui-code"  lay-title="select配置示例">
+{
+    fixed: 'right',
+    title: '操作',
+    width: 200,
+    align: 'center',
+    templet: function (d) {
+        return app.ui.grid.rowBtn(app.returnGridBtn([
+            {
+                title: '修改',
+                event: 'modEvt',
+                code:95
+            },
+            {
+                title: '删除',
+                css: ['layui-btn-danger'],
+                event: 'del',
+                code:96
+            },
+            {
+                title: '重置密码',
+                css: ['layui-btn-danger'],
+                event: 'reset',
+                code:97
+            }
+        ]));
+    }
+}
+</pre>
+        </div>
+        <fieldset class="layui-elem-field layui-field-title site-title">
+            <legend><a name="tablePara">表格右侧按钮</a></legend>
+        </fieldset>
+        <div><img style="height: 300px;" src="../../res/img/not_grid_btn.png" alt=""></div>
+        <div>
+<pre class="layui-code"  lay-title="select配置示例">
+left: {
+    title: '部门列表',
+    btns: app.returnGridBtn([
+    {
+        title: '新增',
+        handle: deptAdd,
+        css: ['layui-btn layui-btn-normal'],
+        name: 'da',
+        code:98
+    }
+])
+</pre>
+        </div>
+   </div>
+   <ul class="layui-fixbar"><li class="layui-icon layui-fixbar-top" lay-type="top" style="display: list-item;display:none" id="scrollTop"></li></ul>
+   <script src="../../res/js/lib/jquery-1.8.0.min.js" type="text/javascript" ></script>
+   <script src="../../res/dep/layui/layui.all.js" type="text/javascript"></script>
+   <script src="../../res/js/web.js"></script>
+</body>
+</html>
